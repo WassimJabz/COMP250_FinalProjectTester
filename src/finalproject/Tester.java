@@ -1,0 +1,397 @@
+package finalproject;
+
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+
+// Student tests
+// ==========================================================================================
+
+/*
+ * Checks that every non-private method in ChessSudoku is one of the required methods
+ */
+class ChessSudoku_extra_methods implements Runnable {
+  @Override
+  public void run() {
+    Class<ChessSudoku> cls = ChessSudoku.class;
+    TMethod[] requiredMethods = getRequiredMethods();
+
+    for (Method m : cls.getDeclaredMethods()) {
+      if (!Modifier.isPrivate(m.getModifiers()) && !TMethod.elementOf(m, requiredMethods)) {
+        throw new AssertionError("Extra method found: " + m);
+      }
+    }
+  }
+
+  private TMethod[] getRequiredMethods() {
+    TMethod[] requiredMethods = new TMethod[7];
+    requiredMethods[0] = new TMethod(Modifier.PUBLIC, Void.TYPE,
+        "solve", new Class[] { boolean.class }, new Class[0]);
+    requiredMethods[1] = new TMethod(Modifier.STATIC, int.class, "readInteger",
+        new Class[] { InputStream.class }, new Class[] { Exception.class });
+    requiredMethods[2] = new TMethod(Modifier.STATIC, String.class, "readWord",
+        new Class[] { InputStream.class }, new Class[] { Exception.class });
+    requiredMethods[3] = new TMethod(Modifier.PUBLIC, Void.TYPE, "read",
+        new Class[] { InputStream.class }, new Class[] { Exception.class });
+    requiredMethods[4] = new TMethod(0, Void.TYPE, "printFixedWidth",
+        new Class[] { String.class, int.class }, new Class[0]);
+    requiredMethods[5] = new TMethod(Modifier.PUBLIC, Void.TYPE, "print", new Class[0], new Class[0]);
+    requiredMethods[6] = new TMethod(Modifier.PUBLIC + Modifier.STATIC, Void.TYPE, "main",
+        new Class[] { String[].class }, new Class[] { Exception.class });
+    return requiredMethods;
+  }
+}
+
+/*
+ * Checks that every non-private field in ChesSudoku is one of the required
+ * fields
+ */
+class ChessSudoku_extra_fields implements Runnable {
+  @Override
+  public void run() {
+    Class<ChessSudoku> cls = ChessSudoku.class;
+    TField[] requiredFields = getRequiredFields();
+
+    for (Field f : cls.getDeclaredFields()) {
+      if (!Modifier.isPrivate(f.getModifiers()) && !TField.elementOf(f, requiredFields))
+        throw new AssertionError("Extra field found: " + f);
+    }
+  }
+
+  private TField[] getRequiredFields() {
+    TField[] requiredFields = new TField[7];
+    requiredFields[0] = new TField(Modifier.PUBLIC, int.class, "SIZE");
+    requiredFields[1] = new TField(Modifier.PUBLIC, int.class, "N");
+    requiredFields[2] = new TField(Modifier.PUBLIC, int[][].class, "grid");
+    requiredFields[3] = new TField(Modifier.PUBLIC, boolean.class, "knightRule");
+    requiredFields[4] = new TField(Modifier.PUBLIC, boolean.class, "kingRule");
+    requiredFields[5] = new TField(Modifier.PUBLIC, boolean.class, "queenRule");
+    requiredFields[6] = new TField(Modifier.PUBLIC, HashSet.class, "solutions");
+    return requiredFields;
+  }
+}
+
+/*
+ * Checks that every non-private constructor in ChessSudoku is one of the
+ * required constructors
+ */
+class ChessSudoku_extra_constructors implements Runnable {
+  @Override
+  @SuppressWarnings("rawtypes")
+  public void run() {
+    Class<ChessSudoku> cls = ChessSudoku.class;
+    TConstructor[] requiredConstructors = getRequiredConstructors();
+
+    for (Constructor c : cls.getDeclaredConstructors()) {
+      if (!Modifier.isPrivate(c.getModifiers()) && !TConstructor.elementOf(c, requiredConstructors))
+        throw new AssertionError("Extra constructor found: " + c);
+    }
+  }
+
+  public TConstructor[] getRequiredConstructors() {
+    TConstructor[] requiredConstructors = new TConstructor[1];
+    // Get rid of "class " at beginning of name
+    String name = ChessSudoku.class.toString().split(" ")[1];
+
+    requiredConstructors[0] = new TConstructor(Modifier.PUBLIC, name,
+        new Class[] { int.class }, new Class[0]);
+    return requiredConstructors;
+  }
+}
+
+/*
+ * Checks that every non-private nested class in ChessSudoku is one of the
+ * required nested classes
+ */
+@SuppressWarnings("rawtypes")
+class ChessSudoku_extra_classes implements Runnable {
+  @Override
+  public void run() {
+    Class<ChessSudoku> cls = ChessSudoku.class;
+    Class[] requiredClasses = getRequiredClasses();
+
+    for (Class c : cls.getDeclaredClasses()) {
+      if (!Arrays.asList(requiredClasses).contains(c))
+        throw new AssertionError("Extra nested class found: " + c);
+    }
+  }
+
+  public Class[] getRequiredClasses() {
+    Class[] requiredClasses = new Class[0];
+    return requiredClasses;
+  }
+}
+
+class Illegal_helper_code implements Runnable {
+  private static String[] tests = {
+      "finalproject.ChessSudoku_extra_methods",
+      "finalproject.ChessSudoku_extra_fields",
+      "finalproject.ChessSudoku_extra_constructors",
+      "finalproject.ChessSudoku_extra_classes"
+  };
+
+  @Override
+  public void run() {
+    for (String str : tests) {
+      try {
+        Runnable testCase = (Runnable) Class.forName(str)
+            .getDeclaredConstructor().newInstance();
+        testCase.run();
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException | NoSuchMethodException | SecurityException
+          | ClassNotFoundException e) {
+        e.printStackTrace();
+        throw new AssertionError(
+            "An unexpected error occurred and the test " + str
+                + " could not be run.");
+      }
+    }
+
+    System.out.println("Test passed.");
+  }
+}
+
+// Utility classes
+// ==========================================================================================
+
+/*
+ * Stores information about methods. Is meant to be compared to instances of
+ * java.lang.reflect.Method (which has no public constructor).
+ */
+@SuppressWarnings("rawtypes")
+class TMethod {
+  private int modifiers;
+  private Class returnType;
+  private String name;
+  private Class[] params;
+  private Class[] exceptions;
+
+  /*
+   * Creates a new TMethod by saving all the given arguments directly to the
+   * corresponding fields
+   */
+  public TMethod(int modifiers, Class returnType, String name, Class[] params,
+      Class[] exceptions) {
+    this.modifiers = modifiers;
+    this.returnType = returnType;
+    this.name = name;
+    this.params = params;
+    this.exceptions = exceptions;
+  }
+
+  /*
+   * A TMethod is equal to a TMethod or a Method if and only if all its fields
+   * match
+   *
+   * This operation is not commutative for TMethods and Methods
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Method) {
+      Method m = (Method) o;
+      return this.modifiers == m.getModifiers()
+          && this.returnType.equals(m.getReturnType())
+          && this.name.equals(m.getName())
+          && Arrays.equals(this.params, m.getParameterTypes())
+          && Arrays.equals(this.exceptions, m.getExceptionTypes());
+    } else if (o instanceof TMethod) {
+      TMethod t = (TMethod) o;
+      return this.modifiers == t.modifiers
+          && this.returnType.equals(t.returnType)
+          && this.name.equals(t.name)
+          && Arrays.equals(this.params, t.params)
+          && Arrays.equals(this.exceptions, t.exceptions);
+    } else
+      return false;
+  }
+
+  /*
+   * Checks if method is equal (using TMethod.equals(method)) to any of the
+   * elements in tMethods
+   */
+  @SuppressWarnings("unlikely-arg-type")
+  public static boolean elementOf(Method method, TMethod[] tMethods) {
+    for (TMethod t : tMethods) {
+      if (t.equals(method))
+        return true;
+    }
+    return false;
+  }
+}
+
+/*
+ * Stores information about Fields. Is meant to be compared to instances of
+ * java.lang.reflect.Field (which has no public constructor).
+ */
+@SuppressWarnings("rawtypes")
+class TField {
+  private int modifiers;
+  private Class type;
+  private String name;
+
+  /*
+   * Creates a new TField by saving all the given arguments directly to the
+   * corresponding fields
+   */
+  public TField(int modifiers, Class type, String name) {
+    this.modifiers = modifiers;
+    this.type = type;
+    this.name = name;
+  }
+
+  /*
+   * A TField is equal to a TField or a Field if and only if all its fields match
+   *
+   * This operation is not commutative for TFields and Fields
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Field) {
+      Field f = (Field) o;
+      return this.modifiers == f.getModifiers()
+          && this.type.equals(f.getType())
+          && this.name.equals(f.getName());
+    } else if (o instanceof TField) {
+      TField t = (TField) o;
+      return this.modifiers == t.modifiers && this.type.equals(t.type)
+          && this.name.equals(t.name);
+    } else
+      return false;
+  }
+
+  /*
+   * Checks if field is equal (using TField.equals(field)) to any of the elements
+   * in tFields
+   */
+  @SuppressWarnings("unlikely-arg-type")
+  public static boolean elementOf(Field field, TField[] tFields) {
+    for (TField t : tFields) {
+      if (t.equals(field))
+        return true;
+    }
+    return false;
+  }
+}
+
+/*
+ * Stores information about Constructors. Is meant to be compared to instances
+ * of java.lang.reflect.Constructor (which has no public constructor*).
+ *
+ * * "Ironic. He could constructor others, but not himself."
+ */
+@SuppressWarnings("rawtypes")
+class TConstructor {
+  private int modifiers;
+  private String name;
+  private Class[] params;
+  private Class[] exceptions;
+
+  /*
+   * Creates a new TMethod by saving all the given arguments directly to the
+   * corresponding fields
+   */
+  public TConstructor(int modifiers, String name, Class[] params,
+      Class[] exceptions) {
+    this.modifiers = modifiers;
+    this.name = name;
+    this.params = params;
+    this.exceptions = exceptions;
+  }
+
+  /*
+   * A TConstructor is equal to a TConstructor or a Constructor if and only if all
+   * its fields match
+   *
+   * This operation is not commutative for TConstructors and Constructors
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Constructor) {
+      Constructor c = (Constructor) o;
+      return this.modifiers == c.getModifiers()
+          && this.name.equals(c.getName())
+          && Arrays.equals(this.params, c.getParameterTypes())
+          && Arrays.equals(this.exceptions, c.getExceptionTypes());
+    } else if (o instanceof TConstructor) {
+      TConstructor t = (TConstructor) o;
+      return this.modifiers == t.modifiers && this.name.equals(t.name)
+          && Arrays.equals(this.params, t.params)
+          && Arrays.equals(this.exceptions, t.exceptions);
+    } else
+      return false;
+  }
+
+  /*
+   * Checks if constructor is equal (using TConstructor.equals(constructor)) to
+   * any of the elements in tConstructors
+   */
+  @SuppressWarnings("unlikely-arg-type")
+  public static boolean elementOf(Constructor constructor,
+      TConstructor[] tConstructors) {
+    for (TConstructor t : tConstructors) {
+      if (t.equals(constructor))
+        return true;
+    }
+    return false;
+  }
+}
+
+// Main class
+// ================================================================================
+
+public class Tester {
+  // To skip running some tests, just comment them out below.
+  static String[] tests = {
+      "finalproject.Illegal_helper_code",
+  };
+
+  public static void main(String[] args) {
+    int numPassed = 0;
+    ArrayList<String> failedTests = new ArrayList<String>(tests.length);
+    for (String className : tests) {
+      System.out.printf("%n======= %s =======%n", className);
+      System.out.flush();
+      try {
+        Runnable testCase = (Runnable) Class.forName(className)
+            .getDeclaredConstructor().newInstance();
+        testCase.run();
+        numPassed++;
+      } catch (AssertionError e) {
+        System.out.println(e);
+        failedTests.add(className);
+      } catch (StackOverflowError e) {
+        StackTraceElement[] elements = e.getStackTrace();
+        System.out.println(className + " caused a stack overflow at: ");
+        for (int i = 0; i < 5 && i < elements.length; i++) {
+          System.out.println(elements[i]);
+        }
+        if (elements.length >= 5) {
+          System.out.println("...and " + (elements.length - 5)
+              + " more elements.");
+        }
+        failedTests.add(className);
+      } catch (Throwable t) {
+        t.printStackTrace();
+        failedTests.add(className);
+      }
+    }
+    System.out.printf("%n%n%d of %d tests passed.%n", numPassed,
+        tests.length);
+    if (failedTests.size() > 0) {
+      System.out.println("Failed test(s):");
+      for (String className : failedTests) {
+        int dotIndex = className.indexOf('.');
+        System.out.println("  " + className.substring(dotIndex + 1));
+      }
+    }
+    if (numPassed == tests.length) {
+      System.out.println("All clear! Great work :)");
+    }
+  }
+}
