@@ -68,7 +68,7 @@ class veryEasy3x3_solution implements Runnable {
 				}
 			}
 		}
-		System.out.println("Test easy3x3 passed.");
+		System.out.println("Test passed.");
 	}
 }
 
@@ -125,7 +125,7 @@ class easy3x3_solution implements Runnable {
 				}
 			}
 		}
-		System.out.println("Test easy3x3 passed.");
+		System.out.println("Test passed.");
 	}
 }
 
@@ -174,7 +174,7 @@ class medium3x3_12solutions_solution implements Runnable {
 			throw new AssertionError(
 					"Test failed.There should be 12 solutions");
 		}
-		System.out.println("Test medium3x3_12solutions_solution passed.");
+		System.out.println("Test passed.");
 	}
 }
 
