@@ -193,6 +193,8 @@ class all_puzzles_benchmark implements Runnable {
 			"knightSudokuEasy3x3.txt",
 			"knightSudokuMedium3x3.txt",
 			"knightSudokuHard3x3.txt",
+			"kingSudokuEasy3x3.txt",
+			"queenSudokuEasy3x3.txt",
 			"veryHard3x3.txt",
 			"veryEasy4x4.txt",
 			"hard4x4.txt",
@@ -212,6 +214,8 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			false,
+			false,
 			false
 	};
 	private boolean[] kingRules = {
@@ -222,6 +226,8 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			false,
+			true,
 			false,
 			false,
 			false,
@@ -238,6 +244,8 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			false,
+			true,
 			false,
 			false,
 			false,

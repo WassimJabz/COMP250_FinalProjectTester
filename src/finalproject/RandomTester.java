@@ -78,18 +78,18 @@ public class RandomTester {
 
 			try {
 				duration = Tester.runSolve(puzzle, false, TIMEOUT_MILLIS);
-				if (Tester.isSolved(puzzle, false, false, false)) {
-					System.out.println((double) duration / 1000000 + " ms");
-				} else {
-					System.out.println("Puzzle not solved");
-					System.out.println("Original puzzle:");
-					puzzleCopy.print();
-					System.out.println();
-					System.out.println("Received puzzle:");
-					puzzle.print();
-					System.out.println();
-					System.out.println();
-				}
+				// if (Tester.isSolved(puzzle, false, false, false)) {
+				// System.out.println((double) duration / 1000000 + " ms");
+				// } else {
+				// System.out.println("Puzzle not solved");
+				// System.out.println("Original puzzle:");
+				// puzzleCopy.print();
+				// System.out.println();
+				// System.out.println("Received puzzle:");
+				// puzzle.print();
+				// System.out.println();
+				// System.out.println();
+				// }
 			} catch (TimeoutException e) {
 				System.out.println("[Timeout after " + TIMEOUT_MILLIS + " ms]");
 				System.out.println("Original puzzle:");
@@ -117,15 +117,15 @@ public class RandomTester {
 			System.out.println();
 			System.out.println("Stats:");
 			System.out.println("------");
-			System.out.println(
-					"Fastest solve: " + (double) minTime / 1000000 + " ms");
-			System.out.println(
-					"Slowest solve: " + (double) maxTime / 1000000 + " ms");
-			System.out.println("Average: "
-					+ (double) total / (1000000 * numPuzzles) + " ms");
+			System.out.printf("Fastest solve: %.3f ms\n",
+					(double) minTime / 1000000);
+			System.out.printf("Slowest solve: %.3f ms\n",
+					(double) maxTime / 1000000);
+			System.out.printf("Average: %.3f ms\n",
+					(double) total / (1000000 * numPuzzles));
 		}
 
-		// Force the program to exit to end any running solves
+		// Force the program to exit to make sure all solves stop
 		System.exit(0);
 	}
 
