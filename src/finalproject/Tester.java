@@ -405,6 +405,53 @@ class veryEasy3x3_solution implements Runnable {
   }
 }
 
+class medium3x3_12solutions_solution implements Runnable {
+
+  @Override
+  public void run() {
+    String localDir = System.getProperty("user.dir");
+    InputStream in = null;
+    try {
+      in = new FileInputStream(localDir + "/src/finalproject/medium3x3_twelveSolutions.txt");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+
+    int puzzleSize = 0;
+    try {
+      puzzleSize = ChessSudoku.readInteger( in );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    ChessSudoku s = new ChessSudoku( puzzleSize );
+
+    // You can modify these to add rules to your sudoku
+    s.knightRule = false;
+    s.kingRule = false;
+    s.queenRule = false;
+
+    // read the rest of the Sudoku puzzle
+    try {
+      s.read( in );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    boolean allSolutions = true;
+    s.solve(allSolutions);
+
+    // Test if the final Puzzle is the same
+    int counter = 0;
+    for(ChessSudoku cur : s.solutions ) {
+      counter++;
+    }
+    if(counter != 12){
+      throw new AssertionError("Test failed.There should be 12 solutions");
+    }
+    System.out.println("Test medium3x3_12solutions_solution passed.");
+  }
+}
+
 // Main class
 // ================================================================================
 
@@ -412,7 +459,8 @@ public class Tester {
   // To skip running some tests, just comment them out below.
   static String[] tests = {
       "finalproject.Illegal_helper_code",
-          "finalproject.veryEasy3x3_solution"
+          "finalproject.veryEasy3x3_solution",
+          "finalproject.medium3x3_12solutions_solution"
   };
 
   public static void main(String[] args) {
