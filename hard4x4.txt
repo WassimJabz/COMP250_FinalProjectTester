@@ -1,0 +1,23 @@
+4
+
+ x 12  x  2 |  x 15 13  5 |  x 16  x  4 | x  x  x  6
+ 1  x  4 13 | 16  x  x  x |  x  x  x  x | x  x  x  x
+ x 15  x  x |  x  x  x 12 |  x  x 11  x | x 14  5  x
+ x  x  7 10 |  x  x  x  6 |  x  x 14  x | 1  x 11  x
+----------------------------------------------------
+ x  x  8  x |  x  x  x  x |  5  x  x 16 | x  x 15  1
+ x  x  x  x |  7  x  5 10 |  x  3 15  x | x  x  8  x
+14  x  2  x |  x  x  x 15 | 13  x  9 10 | x  6  x  4
+ x  4  x  x | 13  8  x  x |  x 11  x  6 | x 12 10  x
+ ----------------------------------------------------
+ x 14  6  x |  1  x 11  x |  x  x  5 15 | x  x  2  x
+15  x  5  x |  3 14  x  7 | 16  x  x  x | x  1  x 12
+ x  1  x  x |  x 13 10  x | 11  4  x 14 | x  x  x  x
+ 9  3  x  x | 12  x  x  2 |  x  x  x  x | x 10  x  x
+ ----------------------------------------------------
+ x  2  x  1 |  x  9  x  x |  6  x  x  x | 5 15  x  x
+ x 16 12  x |  x  2  x  x |  1  x  x  x | x  x  6  x
+ x  x  x  x |  x  x  x  x |  x  x  x  5 | 3  7  x 16
+ 4  x  x  x |  6  x 12  x |  8 14 10  x | 2  x  1  x
+
+(4x4 Sudoku puzzle from www.menneske.no/sudoku/4/eng/)

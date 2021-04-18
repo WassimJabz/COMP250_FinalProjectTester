@@ -19,11 +19,9 @@ class veryEasy3x3_solution implements Runnable {
 
 	@Override
 	public void run() {
-		String localDir = System.getProperty("user.dir");
 		InputStream in = null;
 		try {
-			in = new FileInputStream(
-					localDir + Tester.PUZZLES_FOLDER + "veryEasy3x3.txt");
+			in = new FileInputStream(Tester.PUZZLES_FOLDER + "veryEasy3x3.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -76,11 +74,9 @@ class easy3x3_solution implements Runnable {
 
 	@Override
 	public void run() {
-		String localDir = System.getProperty("user.dir");
 		InputStream in = null;
 		try {
-			in = new FileInputStream(
-					localDir + Tester.PUZZLES_FOLDER + "easy3x3.txt");
+			in = new FileInputStream(Tester.PUZZLES_FOLDER + "easy3x3.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -133,11 +129,10 @@ class medium3x3_12solutions_solution implements Runnable {
 
 	@Override
 	public void run() {
-		String localDir = System.getProperty("user.dir");
 		InputStream in = null;
 		try {
-			in = new FileInputStream(localDir + Tester.PUZZLES_FOLDER
-					+ "medium3x3_twelveSolutions.txt");
+			in = new FileInputStream(
+					Tester.PUZZLES_FOLDER + "medium3x3_twelveSolutions.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -234,11 +229,10 @@ class all_puzzles_benchmark implements Runnable {
 		boolean allSolutionsCorrect = true;
 		long totalTime = 0;
 		for (int i = 0; i < puzzles.length; i++) {
-			String localDir = System.getProperty("user.dir");
 			String puzzleName = puzzles[i];
 			try {
 				FileInputStream in = new FileInputStream(
-						localDir + Tester.PUZZLES_FOLDER + puzzleName);
+						Tester.PUZZLES_FOLDER + puzzleName);
 
 				// The first number in all Sudoku files must represent the size
 				// of the puzzle. See
@@ -640,7 +634,7 @@ class TConstructor {
 public class Tester {
 	// To change the location of the sudoku puzzles, change this (don't forget
 	// the / at the beginning and end)
-	static String PUZZLES_FOLDER = "/";
+	static String PUZZLES_FOLDER = System.getProperty("user.dir") + "/";
 	// To skip running some tests, just comment them out below.
 	static String[] tests = {
 			"finalproject.Illegal_helper_code",
