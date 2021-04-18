@@ -354,7 +354,7 @@ class veryEasy3x3_solution implements Runnable {
     String localDir = System.getProperty("user.dir");
     InputStream in = null;
     try {
-      in = new FileInputStream(localDir + "/src/finalproject/veryEasy3x3.txt");
+      in = new FileInputStream(localDir + "/src/finalproject/Sudokus/veryEasy3x3.txt");
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -415,7 +415,7 @@ class easy3x3_solution implements Runnable {
     String localDir = System.getProperty("user.dir");
     InputStream in = null;
     try {
-      in = new FileInputStream(localDir + "/src/finalproject/easy3x3.txt");
+      in = new FileInputStream(localDir + "/src/finalproject/Sudokus/easy3x3.txt");
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -476,7 +476,7 @@ class medium3x3_12solutions_solution implements Runnable {
     String localDir = System.getProperty("user.dir");
     InputStream in = null;
     try {
-      in = new FileInputStream(localDir + "/src/finalproject/medium3x3_twelveSolutions.txt");
+      in = new FileInputStream(localDir + "/src/finalproject/Sudokus/medium3x3_twelveSolutions.txt");
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
