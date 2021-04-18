@@ -379,11 +379,13 @@ class veryEasy3x3_solution implements Runnable {
     } catch (Exception e) {
       e.printStackTrace();
     }
+
     boolean allSolutions = false;
     s.solve(allSolutions);
 
     // Test if the final Puzzle is the same
-    int[][] desiredResult = {{3, 6, 1, 8, 9, 5, 4, 7, 2},
+    int[][] desiredResult =
+            {{3, 6, 1, 8, 9, 5, 4, 7, 2},
             {9, 5, 2, 7, 3, 4, 8, 1, 6},
             {7, 4, 8, 1, 6, 2, 3, 9, 5},
             {5, 7, 3, 9, 2, 6, 1, 4, 8},
@@ -392,6 +394,7 @@ class veryEasy3x3_solution implements Runnable {
             {6, 9, 7, 4, 1, 8, 2, 5, 3},
             {1, 8, 5, 2, 7, 3, 9, 6, 4},
             {2, 3, 4, 6, 5, 9, 7, 8, 1}};
+
     for(int i = 0; i < 9; i ++){
       //System.out.println(Arrays.toString(desiredResult[i]));
       //System.out.println(Arrays.toString(s.grid[i]));
@@ -401,6 +404,67 @@ class veryEasy3x3_solution implements Runnable {
         }
       }
       }
+    System.out.println("Test easy3x3 passed.");
+  }
+}
+
+class easy3x3_solution implements Runnable {
+
+  @Override
+  public void run() {
+    String localDir = System.getProperty("user.dir");
+    InputStream in = null;
+    try {
+      in = new FileInputStream(localDir + "/src/finalproject/easy3x3.txt");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+
+    int puzzleSize = 0;
+    try {
+      puzzleSize = ChessSudoku.readInteger( in );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    ChessSudoku s = new ChessSudoku( puzzleSize );
+
+    // You can modify these to add rules to your sudoku
+    s.knightRule = false;
+    s.kingRule = false;
+    s.queenRule = false;
+
+    // read the rest of the Sudoku puzzle
+    try {
+      s.read( in );
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    boolean allSolutions = false;
+    s.solve(allSolutions);
+
+    // Test if the final Puzzle is the same
+    int[][] desiredResult =
+            {{4, 5, 1, 2, 9, 6, 8, 3, 7},
+            {7, 8, 2, 5, 4, 3, 6, 9, 1},
+            {3, 9, 6, 8, 1, 7, 4, 5, 2},
+            {9, 1, 3, 7, 8, 5, 2, 4, 6},
+            {6, 4, 7, 1, 2, 9, 3, 8, 5},
+            {8, 2, 5, 6, 3, 4, 7, 1, 9},
+            {1, 6, 4, 9, 7, 8, 5, 2, 3},
+            {2, 7, 8, 3, 5, 1, 9, 6, 4},
+            {5, 3, 9, 4, 6, 2, 1, 7, 8}};
+
+    for(int i = 0; i < 9; i ++){
+      //System.out.println(Arrays.toString(desiredResult[i]));
+      //System.out.println(Arrays.toString(s.grid[i]));
+      for(int j = 0; j < 9; j ++){
+        if(desiredResult[i][j] != s.grid[i][j]){
+          throw new AssertionError("Test failed.");
+        }
+      }
+    }
     System.out.println("Test easy3x3 passed.");
   }
 }
@@ -460,6 +524,7 @@ public class Tester {
   static String[] tests = {
       "finalproject.Illegal_helper_code",
           "finalproject.veryEasy3x3_solution",
+          "finalproject.easy3x3_solution",
           "finalproject.medium3x3_12solutions_solution"
   };
 

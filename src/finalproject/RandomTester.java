@@ -93,20 +93,20 @@ public class RandomTester
 				total += duration;
 			}
 
-			if (Tester.isSolved(puzzle, false, false, false))
-			{
-				System.out.println((double)duration / 1000000 + " ms");
-			}
-			else
-			{
-				System.out.println("Original puzzle:");
-				puzzleCopy.print();
-				System.out.println();
-				System.out.println("Received puzzle:");
-				puzzle.print();
-				System.out.println();
-				System.out.println();
-			}
+//			if (Tester.isSolved(puzzle, false, false, false))
+//			{
+//				System.out.println((double)duration / 1000000 + " ms");
+//			}
+//			else
+//			{
+//				System.out.println("Original puzzle:");
+//				puzzleCopy.print();
+//				System.out.println();
+//				System.out.println("Received puzzle:");
+//				puzzle.print();
+//				System.out.println();
+//				System.out.println();
+//			}
 		}
 
 		// Show stats
@@ -140,11 +140,11 @@ public class RandomTester
 
 			// Assign value and check that puzzle is still valid
 			puzzle.grid[row][col] = val;
-			boolean valid = Tester.isValidValue(puzzle, row, col, knightRule, kingRule, queenRule);
-			if (!valid)
-				puzzle.grid[row][col] = 0;
-			else
-				currentNumClues++;
+//			boolean valid = Tester.isValidValue(puzzle, row, col, knightRule, kingRule, queenRule);
+//			if (!valid)
+//				puzzle.grid[row][col] = 0;
+//			else
+//				currentNumClues++;
 		}
 
 		return puzzle;
