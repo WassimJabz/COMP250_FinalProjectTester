@@ -164,6 +164,9 @@ class medium3x3_12solutions_solution implements Runnable {
 		int counter = 0;
 		for (ChessSudoku cur : s.solutions) {
 			counter++;
+			if (!Tester.isSolved(cur, false, false, false))
+				throw new AssertionError(
+						"At least one of the given solutions is not valid");
 		}
 		if (counter != 12) {
 			throw new AssertionError(
@@ -180,6 +183,9 @@ class all_puzzles_benchmark implements Runnable {
 			"medium3x3.txt",
 			"medium3x3_twelveSolutions.txt",
 			"hard3x3.txt",
+			"knightSudokuEasy3x3.txt",
+			"knightSudokuMedium3x3.txt",
+			"knightSudokuHard3x3.txt",
 			"veryHard3x3.txt",
 			"veryEasy4x4.txt",
 			"hard4x4.txt",
@@ -192,6 +198,9 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			true,
+			true,
+			true,
 			false,
 			false,
 			false,
@@ -208,9 +217,15 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			false,
+			false,
+			false,
 			false
 	};
 	private boolean[] queenRules = {
+			false,
+			false,
+			false,
 			false,
 			false,
 			false,
@@ -235,8 +250,7 @@ class all_puzzles_benchmark implements Runnable {
 						Tester.PUZZLES_FOLDER + puzzleName);
 
 				// The first number in all Sudoku files must represent the size
-				// of the puzzle. See
-				// the example files for the file format.
+				// of the puzzle. See the example files for the file format.
 				int puzzleSize = ChessSudoku.readInteger(in);
 				if (puzzleSize > 100 || puzzleSize < 1) {
 					System.out.println(

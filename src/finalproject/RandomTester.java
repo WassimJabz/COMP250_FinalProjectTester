@@ -4,16 +4,23 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class RandomTester {
-	private static final double SEED_DENSITY = 0.1;
+	private static final double SEED_DENSITY = 0.05;
 	private static final double MIN_CLUE_DENSITY = 0.2;
 	private static final double MAX_CLUE_DENSITY = 0.5;
-	private static final boolean SHOW_PROGRESS = true;
+	private static final boolean SHOW_PROGRESS = false;
+	private static final long SLOW_TIME = Long.MAX_VALUE;
 	private static final boolean SHOW_SUMMARY = true;
 
 	private static Random rand = new Random();
 	private static Scanner sc = new Scanner(System.in);
 
 	public static void main(String[] args) {
+
+		// Greeting/message
+		System.out.println(
+				"NOTE: Your solving algorithm is used in the process of generating random puzzles.."
+						+ "\nIf it does not work, the generated puzzles may not be solvable.\n");
+
 		// Get number of puzzles
 		System.out.print("How many puzzles would you like to generate?\n>> ");
 		String userInput = sc.nextLine();
@@ -71,6 +78,10 @@ public class RandomTester {
 			puzzle.solve(false);
 			long end = System.nanoTime();
 			duration = end - start;
+
+			// Print sudoku if it was slow
+			if (duration >= SLOW_TIME)
+				puzzle.print();
 
 			// Collect stats
 			if (SHOW_SUMMARY) {
