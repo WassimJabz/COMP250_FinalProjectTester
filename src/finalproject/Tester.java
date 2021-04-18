@@ -313,11 +313,14 @@ class all_puzzles_benchmark implements Runnable {
 			System.out.printf("Total time: %.3f ms\n",
 					(double) totalTime / 1000000);
 			System.out.println("\nTest passed.");
-		} else if (!testsRun)
+		} else if (!testsRun) {
+			System.out.println();
 			throw new AssertionError("One or more tests could not be run.");
-		else
+		} else {
+			System.out.println();
 			throw new AssertionError(
 					"One or more puzzles were not solved correctly");
+		}
 	}
 }
 
@@ -745,6 +748,7 @@ public class Tester {
 
 	public static boolean isValidValue(ChessSudoku puzzle, int row, int col,
 			boolean knightRule, boolean kingRule, boolean queenRule) {
+
 		int currentValue = puzzle.grid[row][col];
 
 		// Invalid value / puzzle not filled
@@ -822,12 +826,12 @@ public class Tester {
 		}
 
 		// Check queen rule
-		if (queenRule) {
+		if (queenRule && currentValue == puzzle.N) {
 			int diff = col - row;
 			// Right down diagonal
 			for (int r = 0; r < puzzle.N; r++) {
 				int c = r + diff;
-				if (c < 0)
+				if (c < 0 || r == row)
 					continue;
 				if (c >= puzzle.N)
 					break;
@@ -840,7 +844,7 @@ public class Tester {
 				int c = sum - r;
 				if (c < 0)
 					break;
-				if (c >= puzzle.N)
+				if (c >= puzzle.N || r == row)
 					continue;
 				if (puzzle.grid[r][c] == currentValue)
 					return false;
