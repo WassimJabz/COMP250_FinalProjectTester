@@ -1,0 +1,16 @@
+3
+
+x x 3 | 6 x 8 | 1 x x
+x 4 x | x x x | x 7 x 
+2 x x | x x x | x x 3 
+---------------------
+6 x x | x 9 x | x x 8 
+x x x | 1 x 2 | x x x 
+7 x x | x 6 x | x x 4 
+---------------------
+4 x x | x x x | x x 1 
+x 6 x | x x x | x 2 x 
+x x 5 | 4 x 9 | 8 x x 
+
+(Easy puzzle designed by Mark Goodliffe and 
+Simon Anthony from Cracking the Cryptic)
