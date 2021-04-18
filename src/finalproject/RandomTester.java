@@ -2,13 +2,15 @@ package finalproject;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class RandomTester {
 	private static final double SEED_DENSITY = 0.05;
 	private static final double MIN_CLUE_DENSITY = 0.2;
 	private static final double MAX_CLUE_DENSITY = 0.5;
 	private static final boolean SHOW_PROGRESS = false;
-	private static final long SLOW_TIME = Long.MAX_VALUE;
+	private static final long TIMEOUT_MILLIS = 60000;
 	private static final boolean SHOW_SUMMARY = true;
 
 	private static Random rand = new Random();
@@ -63,7 +65,7 @@ public class RandomTester {
 
 		// Generate and solve sudokus
 		long duration;
-		long minTime = Integer.MAX_VALUE;
+		long minTime = Long.MAX_VALUE;
 		long maxTime = 0;
 		long total = 0;
 		for (int i = 0; i < numPuzzles; i++) {
@@ -74,14 +76,31 @@ public class RandomTester {
 			if (SHOW_PROGRESS)
 				System.out.print("Solving... ");
 
-			long start = System.nanoTime();
-			puzzle.solve(false);
-			long end = System.nanoTime();
-			duration = end - start;
-
-			// Print sudoku if it was slow
-			if (duration >= SLOW_TIME)
-				puzzle.print();
+			try {
+				duration = Tester.runSolve(puzzle, false, TIMEOUT_MILLIS);
+				if (Tester.isSolved(puzzle, false, false, false)) {
+					System.out.println((double) duration / 1000000 + " ms");
+				} else {
+					System.out.println("Puzzle not solved");
+					System.out.println("Original puzzle:");
+					puzzleCopy.print();
+					System.out.println();
+					System.out.println("Received puzzle:");
+					puzzle.print();
+					System.out.println();
+					System.out.println();
+				}
+			} catch (TimeoutException e) {
+				System.out.println("[Timeout after " + TIMEOUT_MILLIS + " ms]");
+				System.out.println("Original puzzle:");
+				puzzleCopy.print();
+				System.out.println();
+				duration = TIMEOUT_MILLIS * 1000000;
+			} catch (InterruptedException | ExecutionException e) {
+				System.out.println("An unexpected error occurred: ");
+				e.printStackTrace();
+				duration = TIMEOUT_MILLIS * 1000000;
+			}
 
 			// Collect stats
 			if (SHOW_SUMMARY) {
@@ -90,18 +109,6 @@ public class RandomTester {
 				if (duration > maxTime)
 					maxTime = duration;
 				total += duration;
-			}
-
-			if (Tester.isSolved(puzzle, false, false, false)) {
-				System.out.println((double) duration / 1000000 + " ms");
-			} else {
-				System.out.println("Original puzzle:");
-				puzzleCopy.print();
-				System.out.println();
-				System.out.println("Received puzzle:");
-				puzzle.print();
-				System.out.println();
-				System.out.println();
 			}
 		}
 
@@ -117,6 +124,9 @@ public class RandomTester {
 			System.out.println("Average: "
 					+ (double) total / (1000000 * numPuzzles) + " ms");
 		}
+
+		// Force the program to exit to end any running solves
+		System.exit(0);
 	}
 
 	public static ChessSudoku seedPuzzle(int size, boolean knightRule,

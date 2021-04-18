@@ -11,6 +11,13 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 // Student tests
 // ==========================================================================================
@@ -237,6 +244,7 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false
 	};
+	private final long TIMEOUT_MILLIS = 1000;
 
 	@Override
 	public void run() {
@@ -268,20 +276,24 @@ class all_puzzles_benchmark implements Runnable {
 				// read the rest of the Sudoku puzzle
 				s.read(in);
 
-				long start = System.nanoTime();
-				s.solve(false);
-				long end = System.nanoTime();
-				long duration = end - start;
-				totalTime += duration;
-
 				System.out.print(puzzleName + ": ");
-				if (Tester.isSolved(s, knightRules[i], kingRules[i],
-						queenRules[i]))
-					System.out.printf("%.3f ms\n", (double) duration / 1000000);
-				else {
-					System.out.println("[Not solved correctly]");
-					allSolutionsCorrect = false;
+				long duration;
+				try {
+					duration = Tester.runSolve(s, false, TIMEOUT_MILLIS);
+					if (Tester.isSolved(s, knightRules[i], kingRules[i],
+							queenRules[i]))
+						System.out.printf("%.3f ms\n",
+								(double) duration / 1000000);
+					else {
+						System.out.println("[Not solved correctly]");
+						allSolutionsCorrect = false;
+					}
+				} catch (TimeoutException e) {
+					duration = TIMEOUT_MILLIS * 1000000;
+					System.out.println(
+							"[Timeout after " + TIMEOUT_MILLIS + " ms]");
 				}
+				totalTime += duration;
 			} catch (Exception e) {
 				testsRun = false;
 				e.printStackTrace();
@@ -475,7 +487,8 @@ class TMethod {
 	 * Creates a new TMethod by saving all the given arguments directly to the
 	 * corresponding fields
 	 */
-	public TMethod(int modifiers, Class returnType, String name, Class[] params,
+	public TMethod(int modifiers, Class returnType, String name,
+			Class[] params,
 			Class[] exceptions) {
 		this.modifiers = modifiers;
 		this.returnType = returnType;
@@ -498,7 +511,8 @@ class TMethod {
 					&& this.returnType.equals(m.getReturnType())
 					&& this.name.equals(m.getName())
 					&& Arrays.equals(this.params, m.getParameterTypes())
-					&& Arrays.equals(this.exceptions, m.getExceptionTypes());
+					&& Arrays.equals(this.exceptions,
+							m.getExceptionTypes());
 		} else if (o instanceof TMethod) {
 			TMethod t = (TMethod) o;
 			return this.modifiers == t.modifiers
@@ -617,7 +631,8 @@ class TConstructor {
 			return this.modifiers == c.getModifiers()
 					&& this.name.equals(c.getName())
 					&& Arrays.equals(this.params, c.getParameterTypes())
-					&& Arrays.equals(this.exceptions, c.getExceptionTypes());
+					&& Arrays.equals(this.exceptions,
+							c.getExceptionTypes());
 		} else if (o instanceof TConstructor) {
 			TConstructor t = (TConstructor) o;
 			return this.modifiers == t.modifiers && this.name.equals(t.name)
@@ -659,6 +674,7 @@ public class Tester {
 	};
 
 	public static void main(String[] args) {
+
 		int numPassed = 0;
 		ArrayList<String> failedTests = new ArrayList<String>(tests.length);
 		for (String className : tests) {
@@ -694,12 +710,15 @@ public class Tester {
 			System.out.println("Failed test(s):");
 			for (String className : failedTests) {
 				int dotIndex = className.indexOf('.');
-				System.out.println("  " + className.substring(dotIndex + 1));
+				System.out.println(" " + className.substring(dotIndex + 1));
 			}
 		}
 		if (numPassed == tests.length) {
 			System.out.println("All clear! Great work :)");
 		}
+
+		// Force the program to exit to end any running solves
+		System.exit(0);
 	}
 
 	public static boolean isSolved(ChessSudoku puzzle, boolean knightRule,
@@ -821,5 +840,24 @@ public class Tester {
 		}
 
 		return true;
+	}
+
+	public static long runSolve(ChessSudoku puzzle, boolean allSolutions,
+			long timeoutMillis)
+			throws TimeoutException, InterruptedException, ExecutionException {
+
+		ExecutorService exec = Executors.newFixedThreadPool(1);
+		Future<Long> future = exec.submit(new Callable<Long>() {
+			@Override
+			public Long call() throws Exception {
+				long start = System.nanoTime();
+				puzzle.solve(allSolutions);
+				long end = System.nanoTime();
+				return end - start;
+			}
+		});
+		exec.shutdown();
+
+		return future.get(timeoutMillis, TimeUnit.MILLISECONDS);
 	}
 }
