@@ -23,7 +23,7 @@ class veryEasy3x3_solution implements Runnable {
 		InputStream in = null;
 		try {
 			in = new FileInputStream(
-					localDir + "/src/finalproject/Sudokus/veryEasy3x3.txt");
+					localDir + Tester.PUZZLES_FOLDER + "veryEasy3x3.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -80,7 +80,7 @@ class easy3x3_solution implements Runnable {
 		InputStream in = null;
 		try {
 			in = new FileInputStream(
-					localDir + "/src/finalproject/Sudokus/easy3x3.txt");
+					localDir + Tester.PUZZLES_FOLDER + "easy3x3.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -136,8 +136,8 @@ class medium3x3_12solutions_solution implements Runnable {
 		String localDir = System.getProperty("user.dir");
 		InputStream in = null;
 		try {
-			in = new FileInputStream(localDir
-					+ "/src/finalproject/Sudokus/medium3x3_twelveSolutions.txt");
+			in = new FileInputStream(localDir + Tester.PUZZLES_FOLDER
+					+ "medium3x3_twelveSolutions.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -175,6 +175,121 @@ class medium3x3_12solutions_solution implements Runnable {
 					"Test failed.There should be 12 solutions");
 		}
 		System.out.println("Test passed.");
+	}
+}
+
+class all_puzzles_benchmark implements Runnable {
+	private String[] puzzles = {
+			"veryEasy3x3_twoSolutions.txt",
+			"easy3x3.txt",
+			"medium3x3.txt",
+			"medium3x3_twelveSolutions.txt",
+			"hard3x3.txt",
+			"veryHard3x3.txt",
+			"veryEasy4x4.txt",
+			"hard4x4.txt",
+			"veryHard4x4.txt",
+			"veryHard5x5.txt"
+	};
+	private boolean[] knightRules = {
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false
+	};
+	private boolean[] kingRules = {
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false
+	};
+	private boolean[] queenRules = {
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false
+	};
+
+	@Override
+	public void run() {
+		boolean testsRun = true;
+		boolean allSolutionsCorrect = true;
+		long totalTime = 0;
+		for (int i = 0; i < puzzles.length; i++) {
+			String localDir = System.getProperty("user.dir");
+			String puzzleName = puzzles[i];
+			try {
+				FileInputStream in = new FileInputStream(
+						localDir + Tester.PUZZLES_FOLDER + puzzleName);
+
+				// The first number in all Sudoku files must represent the size
+				// of the puzzle. See
+				// the example files for the file format.
+				int puzzleSize = ChessSudoku.readInteger(in);
+				if (puzzleSize > 100 || puzzleSize < 1) {
+					System.out.println(
+							"Error: The Sudoku puzzle size must be between 1 and 100.");
+					System.exit(-1);
+				}
+
+				ChessSudoku s = new ChessSudoku(puzzleSize);
+
+				// You can modify these to add rules to your sudoku
+				s.knightRule = knightRules[i];
+				s.kingRule = kingRules[i];
+				s.queenRule = queenRules[i];
+
+				// read the rest of the Sudoku puzzle
+				s.read(in);
+
+				long start = System.nanoTime();
+				s.solve(false);
+				long end = System.nanoTime();
+				long duration = end - start;
+				totalTime += duration;
+
+				System.out.print(puzzleName + ": ");
+				if (Tester.isSolved(s, knightRules[i], kingRules[i],
+						queenRules[i]))
+					System.out.printf("%.3f ms\n", (double) duration / 1000000);
+				else {
+					System.out.println("[Not solved correctly]");
+					allSolutionsCorrect = false;
+				}
+			} catch (Exception e) {
+				testsRun = false;
+				e.printStackTrace();
+			}
+		}
+
+		if (testsRun && allSolutionsCorrect) {
+			System.out.println("-------------------------");
+			System.out.printf("Total time: %.3f ms\n",
+					(double) totalTime / 1000000);
+			System.out.println("\nTest passed.");
+		} else if (!testsRun)
+			throw new AssertionError("One or more tests could not be run.");
+		else
+			throw new AssertionError(
+					"One or more puzzles were not solved correctly");
 	}
 }
 
@@ -523,12 +638,16 @@ class TConstructor {
 // ================================================================================
 
 public class Tester {
+	// To change the location of the sudoku puzzles, change this (don't forget
+	// the / at the beginning and end)
+	static String PUZZLES_FOLDER = "/";
 	// To skip running some tests, just comment them out below.
 	static String[] tests = {
 			"finalproject.Illegal_helper_code",
 			"finalproject.veryEasy3x3_solution",
 			"finalproject.easy3x3_solution",
-			"finalproject.medium3x3_12solutions_solution"
+			"finalproject.medium3x3_12solutions_solution",
+			"finalproject.all_puzzles_benchmark"
 	};
 
 	public static void main(String[] args) {
