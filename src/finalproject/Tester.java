@@ -1,5 +1,7 @@
 package finalproject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -13,8 +15,172 @@ import java.util.HashSet;
 // Student tests
 // ==========================================================================================
 
+class veryEasy3x3_solution implements Runnable {
+
+	@Override
+	public void run() {
+		String localDir = System.getProperty("user.dir");
+		InputStream in = null;
+		try {
+			in = new FileInputStream(
+					localDir + "/src/finalproject/Sudokus/veryEasy3x3.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		int puzzleSize = 0;
+		try {
+			puzzleSize = ChessSudoku.readInteger(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		// You can modify these to add rules to your sudoku
+		s.knightRule = false;
+		s.kingRule = false;
+		s.queenRule = false;
+
+		// read the rest of the Sudoku puzzle
+		try {
+			s.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		boolean allSolutions = false;
+		s.solve(allSolutions);
+
+		// Test if the final Puzzle is the same
+		int[][] desiredResult = {{3, 6, 1, 8, 9, 5, 4, 7, 2},
+				{9, 5, 2, 7, 3, 4, 8, 1, 6}, {7, 4, 8, 1, 6, 2, 3, 9, 5},
+				{5, 7, 3, 9, 2, 6, 1, 4, 8}, {8, 2, 9, 5, 4, 1, 6, 3, 7},
+				{4, 1, 6, 3, 8, 7, 5, 2, 9}, {6, 9, 7, 4, 1, 8, 2, 5, 3},
+				{1, 8, 5, 2, 7, 3, 9, 6, 4}, {2, 3, 4, 6, 5, 9, 7, 8, 1}};
+
+		for (int i = 0; i < 9; i++) {
+			// System.out.println(Arrays.toString(desiredResult[i]));
+			// System.out.println(Arrays.toString(s.grid[i]));
+			for (int j = 0; j < 9; j++) {
+				if (desiredResult[i][j] != s.grid[i][j]) {
+					throw new AssertionError("Test failed.");
+				}
+			}
+		}
+		System.out.println("Test easy3x3 passed.");
+	}
+}
+
+class easy3x3_solution implements Runnable {
+
+	@Override
+	public void run() {
+		String localDir = System.getProperty("user.dir");
+		InputStream in = null;
+		try {
+			in = new FileInputStream(
+					localDir + "/src/finalproject/Sudokus/easy3x3.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		int puzzleSize = 0;
+		try {
+			puzzleSize = ChessSudoku.readInteger(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		// You can modify these to add rules to your sudoku
+		s.knightRule = false;
+		s.kingRule = false;
+		s.queenRule = false;
+
+		// read the rest of the Sudoku puzzle
+		try {
+			s.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		boolean allSolutions = false;
+		s.solve(allSolutions);
+
+		// Test if the final Puzzle is the same
+		int[][] desiredResult = {{4, 5, 1, 2, 9, 6, 8, 3, 7},
+				{7, 8, 2, 5, 4, 3, 6, 9, 1}, {3, 9, 6, 8, 1, 7, 4, 5, 2},
+				{9, 1, 3, 7, 8, 5, 2, 4, 6}, {6, 4, 7, 1, 2, 9, 3, 8, 5},
+				{8, 2, 5, 6, 3, 4, 7, 1, 9}, {1, 6, 4, 9, 7, 8, 5, 2, 3},
+				{2, 7, 8, 3, 5, 1, 9, 6, 4}, {5, 3, 9, 4, 6, 2, 1, 7, 8}};
+
+		for (int i = 0; i < 9; i++) {
+			// System.out.println(Arrays.toString(desiredResult[i]));
+			// System.out.println(Arrays.toString(s.grid[i]));
+			for (int j = 0; j < 9; j++) {
+				if (desiredResult[i][j] != s.grid[i][j]) {
+					throw new AssertionError("Test failed.");
+				}
+			}
+		}
+		System.out.println("Test easy3x3 passed.");
+	}
+}
+
+class medium3x3_12solutions_solution implements Runnable {
+
+	@Override
+	public void run() {
+		String localDir = System.getProperty("user.dir");
+		InputStream in = null;
+		try {
+			in = new FileInputStream(localDir
+					+ "/src/finalproject/Sudokus/medium3x3_twelveSolutions.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		int puzzleSize = 0;
+		try {
+			puzzleSize = ChessSudoku.readInteger(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		// You can modify these to add rules to your sudoku
+		s.knightRule = false;
+		s.kingRule = false;
+		s.queenRule = false;
+
+		// read the rest of the Sudoku puzzle
+		try {
+			s.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean allSolutions = true;
+		s.solve(allSolutions);
+
+		// Test if the final Puzzle is the same
+		int counter = 0;
+		for (ChessSudoku cur : s.solutions) {
+			counter++;
+		}
+		if (counter != 12) {
+			throw new AssertionError(
+					"Test failed.There should be 12 solutions");
+		}
+		System.out.println("Test medium3x3_12solutions_solution passed.");
+	}
+}
+
 /*
- * Checks that every non-private method in ChessSudoku is one of the required methods
+ * Checks that every non-private method in ChessSudoku is one of the required
+ * methods
  */
 class ChessSudoku_extra_methods implements Runnable {
 	@Override
@@ -358,7 +524,12 @@ class TConstructor {
 
 public class Tester {
 	// To skip running some tests, just comment them out below.
-	static String[] tests = {"finalproject.Illegal_helper_code",};
+	static String[] tests = {
+			"finalproject.Illegal_helper_code",
+			"finalproject.veryEasy3x3_solution",
+			"finalproject.easy3x3_solution",
+			"finalproject.medium3x3_12solutions_solution"
+	};
 
 	public static void main(String[] args) {
 		int numPassed = 0;

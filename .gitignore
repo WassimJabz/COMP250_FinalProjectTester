@@ -3,3 +3,4 @@ ChessSudoku.java
 /.project
 /.settings/
 /bin/
+.DS_Store
