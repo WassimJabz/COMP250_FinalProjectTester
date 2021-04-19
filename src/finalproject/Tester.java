@@ -199,6 +199,7 @@ class all_puzzles_benchmark implements Runnable {
 			"veryEasy4x4.txt",
 			"hard4x4.txt",
 			"veryHard4x4.txt",
+			"harder5x5.txt",
 			"veryHard5x5.txt"
 	};
 	private boolean[] knightRules = {
@@ -210,6 +211,8 @@ class all_puzzles_benchmark implements Runnable {
 			true,
 			true,
 			true,
+			false,
+			false,
 			false,
 			false,
 			false,
@@ -233,6 +236,7 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			false,
 			false
 	};
 	private boolean[] queenRules = {
@@ -250,14 +254,16 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			false,
 			false
 	};
-	private final long TIMEOUT_MILLIS = 1000;
+	private final long TIMEOUT_MILLIS = 60000;
 
 	@Override
 	public void run() {
 		boolean testsRun = true;
 		boolean allSolutionsCorrect = true;
+		boolean timeout = false;
 		long totalTime = 0;
 		for (int i = 0; i < puzzles.length; i++) {
 			String puzzleName = puzzles[i];
@@ -298,6 +304,7 @@ class all_puzzles_benchmark implements Runnable {
 					}
 				} catch (TimeoutException e) {
 					duration = TIMEOUT_MILLIS * 1000000;
+					timeout = true;
 					System.out.println(
 							"[Timeout after " + TIMEOUT_MILLIS + " ms]");
 				}
@@ -308,7 +315,7 @@ class all_puzzles_benchmark implements Runnable {
 			}
 		}
 
-		if (testsRun && allSolutionsCorrect) {
+		if (testsRun && allSolutionsCorrect && !timeout) {
 			System.out.println("-------------------------");
 			System.out.printf("Total time: %.3f ms\n",
 					(double) totalTime / 1000000);
@@ -316,10 +323,19 @@ class all_puzzles_benchmark implements Runnable {
 		} else if (!testsRun) {
 			System.out.println();
 			throw new AssertionError("One or more tests could not be run.");
-		} else {
+		} else if (!allSolutionsCorrect) {
 			System.out.println();
 			throw new AssertionError(
 					"One or more puzzles were not solved correctly");
+		} else {
+			System.out.println("-------------------------");
+			System.out.printf("Total time > %.3f ms\n",
+					(double) totalTime / 1000000);
+			System.out.println();
+			throw new AssertionError(
+					"One or more tests could not be completed in "
+							+ TIMEOUT_MILLIS
+							+ " ms. \nTry increasing TIMEOUT_MILLIS.");
 		}
 	}
 }
