@@ -78,18 +78,18 @@ public class RandomTester {
 
 			try {
 				duration = Tester.runSolve(puzzle, false, TIMEOUT_MILLIS);
-				// if (Tester.isSolved(puzzle, false, false, false)) {
-				// System.out.println((double) duration / 1000000 + " ms");
-				// } else {
-				// System.out.println("Puzzle not solved");
-				// System.out.println("Original puzzle:");
-				// puzzleCopy.print();
-				// System.out.println();
-				// System.out.println("Received puzzle:");
-				// puzzle.print();
-				// System.out.println();
-				// System.out.println();
-				// }
+				if (Tester.isSolved(puzzle, false, false, false)) {
+					System.out.println((double) duration / 1000000 + " ms");
+				} else {
+					System.out.println("Puzzle not solved");
+					System.out.println("Original puzzle:");
+					puzzleCopy.print();
+					System.out.println();
+					System.out.println("Received puzzle:");
+					puzzle.print();
+					System.out.println();
+					System.out.println();
+				}
 			} catch (TimeoutException e) {
 				System.out.println("[Timeout after " + TIMEOUT_MILLIS + " ms]");
 				System.out.println("Original puzzle:");
