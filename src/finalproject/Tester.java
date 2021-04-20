@@ -353,7 +353,8 @@ class ChessSudoku_extra_methods implements Runnable {
 		for (Method m : cls.getDeclaredMethods()) {
 			if (!Modifier.isPrivate(m.getModifiers())
 					&& !TMethod.elementOf(m, requiredMethods)) {
-				throw new AssertionError("Extra method found: " + m);
+				throw new AssertionError(
+						"Extra non-private method found: " + m);
 			}
 		}
 	}
@@ -394,7 +395,7 @@ class ChessSudoku_extra_fields implements Runnable {
 		for (Field f : cls.getDeclaredFields()) {
 			if (!Modifier.isPrivate(f.getModifiers())
 					&& !TField.elementOf(f, requiredFields))
-				throw new AssertionError("Extra field found: " + f);
+				throw new AssertionError("Extra non-private field found: " + f);
 		}
 	}
 
@@ -429,7 +430,8 @@ class ChessSudoku_extra_constructors implements Runnable {
 		for (Constructor c : cls.getDeclaredConstructors()) {
 			if (!Modifier.isPrivate(c.getModifiers())
 					&& !TConstructor.elementOf(c, requiredConstructors))
-				throw new AssertionError("Extra constructor found: " + c);
+				throw new AssertionError(
+						"Extra non-private constructor found: " + c);
 		}
 	}
 
@@ -456,8 +458,10 @@ class ChessSudoku_extra_classes implements Runnable {
 		Class[] requiredClasses = getRequiredClasses();
 
 		for (Class c : cls.getDeclaredClasses()) {
-			if (!Arrays.asList(requiredClasses).contains(c))
-				throw new AssertionError("Extra nested class found: " + c);
+			if (!Modifier.isPrivate(c.getModifiers())
+					&& !Arrays.asList(requiredClasses).contains(c))
+				throw new AssertionError(
+						"Extra non-private nested class found: " + c);
 		}
 	}
 
