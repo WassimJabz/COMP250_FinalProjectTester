@@ -177,7 +177,7 @@ class medium3x3_12solutions_solution implements Runnable {
 		}
 		if (counter != 12) {
 			throw new AssertionError(
-					"Test failed.There should be 12 solutions");
+					"Test failed. There should be 12 solutions, but " + counter + " were given.");
 		}
 		System.out.println("Test passed.");
 	}
