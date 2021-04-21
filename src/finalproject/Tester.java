@@ -42,6 +42,9 @@ class veryEasy3x3_solution implements Runnable {
 
 		ChessSudoku s = new ChessSudoku(puzzleSize);
 
+		//Uncomment to see what is going on
+//		Visualizer visualizer = new Visualizer(s);
+
 		// You can modify these to add rules to your sudoku
 		s.knightRule = false;
 		s.kingRule = false;
@@ -96,6 +99,9 @@ class easy3x3_solution implements Runnable {
 		}
 
 		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		//Uncomment to see what is going on
+//		Visualizer visualizer = new Visualizer(s);
 
 		// You can modify these to add rules to your sudoku
 		s.knightRule = false;
@@ -152,6 +158,9 @@ class medium3x3_12solutions_solution implements Runnable {
 		}
 
 		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		//Uncomment to see what is going on
+//		Visualizer visualizer = new Visualizer(s);
 
 		// You can modify these to add rules to your sudoku
 		s.knightRule = false;
