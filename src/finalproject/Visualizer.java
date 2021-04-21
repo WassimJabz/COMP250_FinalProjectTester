@@ -17,6 +17,7 @@ public class Visualizer extends Thread {
     BoardPanel boardPanel;
     ChessSudoku game;
     JButton refreshButton;
+    ArrayList<Square> lastHighlighted = new ArrayList<>();
 
     public Visualizer(ChessSudoku game){
         this.gameFrame = new JFrame("Chess Sudoku Visualizer");
@@ -65,6 +66,9 @@ public class Visualizer extends Thread {
         }
 
         public void refreshBoard() {
+            for(Square square : lastHighlighted){
+                square.setBackground(Color.WHITE);
+            }
             for (Square square : boardSquares) {
                 square.refreshSquare();
                 validate();
@@ -95,6 +99,8 @@ public class Visualizer extends Thread {
                 number = game.grid[x][y];
                 add(new JLabel("" + number));
                 validate();
+                setBackground(Color.GREEN);
+                lastHighlighted.add(this);
             }
         }
     }
