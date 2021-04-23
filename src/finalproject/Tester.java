@@ -42,8 +42,8 @@ class veryEasy3x3_solution implements Runnable {
 
 		ChessSudoku s = new ChessSudoku(puzzleSize);
 
-		//Uncomment to see what is going on
-//		Visualizer visualizer = new Visualizer(s);
+		// Uncomment to see what is going on
+		// Visualizer visualizer = new Visualizer(s);
 
 		// You can modify these to add rules to your sudoku
 		s.knightRule = false;
@@ -100,8 +100,8 @@ class easy3x3_solution implements Runnable {
 
 		ChessSudoku s = new ChessSudoku(puzzleSize);
 
-		//Uncomment to see what is going on
-//		Visualizer visualizer = new Visualizer(s);
+		// Uncomment to see what is going on
+		// Visualizer visualizer = new Visualizer(s);
 
 		// You can modify these to add rules to your sudoku
 		s.knightRule = false;
@@ -159,8 +159,8 @@ class medium3x3_12solutions_solution implements Runnable {
 
 		ChessSudoku s = new ChessSudoku(puzzleSize);
 
-		//Uncomment to see what is going on
-//		Visualizer visualizer = new Visualizer(s);
+		// Uncomment to see what is going on
+		// Visualizer visualizer = new Visualizer(s);
 
 		// You can modify these to add rules to your sudoku
 		s.knightRule = false;
@@ -186,7 +186,8 @@ class medium3x3_12solutions_solution implements Runnable {
 		}
 		if (counter != 12) {
 			throw new AssertionError(
-					"Test failed. There should be 12 solutions, but " + counter + " were given.");
+					"Test failed. There should be 12 solutions, but " + counter
+							+ " were given.");
 		}
 		System.out.println("Test passed.");
 	}
@@ -208,8 +209,11 @@ class all_puzzles_benchmark implements Runnable {
 			"veryEasy4x4.txt",
 			"hard4x4.txt",
 			"veryHard4x4.txt",
+			"knightKing4x4.txt",
+			"queen4x4.txt",
 			"harder5x5.txt",
-			"veryHard5x5.txt"
+			"veryHard5x5.txt",
+			"queen5x5.txt"
 	};
 	private boolean[] knightRules = {
 			false,
@@ -225,6 +229,8 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			false,
+			true,
 			false,
 			false,
 			false,
@@ -243,6 +249,9 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
+			false,
+			false,
+			true,
 			false,
 			false,
 			false,
@@ -264,7 +273,10 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
-			false
+			true,
+			false,
+			false,
+			true
 	};
 	private final long TIMEOUT_MILLIS = 60000;
 
