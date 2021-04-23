@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public class RandomTester {
-	private static final double SEED_DENSITY = 0.1;
+	private static final double SEED_DENSITY = 0.05;
 	private static final double MIN_CLUE_DENSITY = 0.4;
 	private static final double MAX_CLUE_DENSITY = 0.6;
 	private static final boolean SHOW_PROGRESS = true;
