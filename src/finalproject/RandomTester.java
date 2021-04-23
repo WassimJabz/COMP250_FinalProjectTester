@@ -76,12 +76,26 @@ public class RandomTester {
 		long total = 0;
 		for (int i = 0; i < numPuzzles; i++) {
 			if (SHOW_PROGRESS)
-				System.out.println("Generating puzzle... ");
-			ChessSudoku puzzle = makeRandomPuzzle(size, knightRule, kingRule,
-					queenRule);
+				System.out.print("Generating puzzle... ");
+
+			ChessSudoku puzzle;
+			try {
+				puzzle = makeRandomPuzzle(size, knightRule, kingRule,
+						queenRule);
+			} catch (TimeoutException e1) {
+				System.out.println("[Puzzle generation timed out after "
+						+ TIMEOUT_MILLIS + " ms]");
+				continue;
+			}
 			ChessSudoku puzzleCopy = deepCopyPuzzle(puzzle);
+
 			if (SHOW_PROGRESS)
-				System.out.print("Solving... ");
+				System.out.print("\nSolving... ");
+
+			// TODO Remove this
+			System.out.println("Puzzle:");
+			puzzle.print();
+			System.out.println();
 
 			try {
 				duration = Tester.runSolve(puzzle, allSolutions,
@@ -146,6 +160,9 @@ public class RandomTester {
 	public static ChessSudoku seedPuzzle(int size, boolean knightRule,
 			boolean kingRule, boolean queenRule) {
 		ChessSudoku puzzle = new ChessSudoku(size);
+		puzzle.knightRule = knightRule;
+		puzzle.kingRule = kingRule;
+		puzzle.queenRule = queenRule;
 		int n = size * size;
 
 		int numCluesToAdd = (int) (SEED_DENSITY * n * n);
@@ -172,11 +189,29 @@ public class RandomTester {
 	}
 
 	private static ChessSudoku makeRandomPuzzle(int size, boolean knightRule,
-			boolean kingRule, boolean queenRule) {
+			boolean kingRule, boolean queenRule) throws TimeoutException {
 		int n = size * size;
 
+		if (SHOW_PROGRESS)
+			System.out.print("Creating seed... ");
+
 		ChessSudoku puzzle = seedPuzzle(size, knightRule, kingRule, queenRule);
-		puzzle.solve(false);
+
+		if (SHOW_PROGRESS)
+			System.out.print("Solving seed... ");
+
+		try {
+			Tester.runSolve(puzzle, false, TIMEOUT_MILLIS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (SHOW_PROGRESS)
+			System.out.print("Filtering... ");
 
 		// Decide how many clues to give
 		int minInt = (int) (MIN_CLUE_DENSITY * n * n);
