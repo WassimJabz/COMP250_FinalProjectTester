@@ -286,6 +286,15 @@ class all_puzzles_benchmark implements Runnable {
 		boolean allSolutionsCorrect = true;
 		boolean timeout = false;
 		long totalTime = 0;
+
+		// Get longest name
+		int maxNameLength = 0;
+		for (String str : puzzles) {
+			int currentLength = str.length();
+			if (currentLength > maxNameLength)
+				maxNameLength = currentLength;
+		}
+
 		for (int i = 0; i < puzzles.length; i++) {
 			String puzzleName = puzzles[i];
 			try {
@@ -311,7 +320,8 @@ class all_puzzles_benchmark implements Runnable {
 				// read the rest of the Sudoku puzzle
 				s.read(in);
 
-				System.out.print(puzzleName + ": ");
+				System.out.printf("%-" + (maxNameLength + 3) + "s",
+						puzzleName + ":");
 				long duration;
 				try {
 					duration = Tester.runSolve(s, false, TIMEOUT_MILLIS);
