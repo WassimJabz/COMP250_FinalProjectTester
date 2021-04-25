@@ -291,6 +291,14 @@ class all_puzzles_benchmark implements Runnable {
 		boolean timeout = false;
 		long totalTime = 0;
 
+		// Get performance factor
+		double performanceFactor = Tester.getPerformanceFactor();
+		System.out.printf(
+				"(Note): the runtimes shown below are adjusted to account for"
+						+ "\n    your computer's performance."
+						+ "\nYour performance factor is %.3f\n\n",
+				performanceFactor);
+
 		// Get longest name
 		int maxNameLength = 0;
 		for (String str : puzzles) {
@@ -351,8 +359,8 @@ class all_puzzles_benchmark implements Runnable {
 		}
 
 		if (testsRun && allSolutionsCorrect && !timeout) {
-			System.out.println("-------------------------");
-			System.out.printf("Total time: %.3f ms\n",
+			System.out.println("---------------------------------------------");
+			System.out.printf("Total adjusted time: %.3f ms\n",
 					(double) totalTime / 1000000);
 			System.out.println("\nTest passed.");
 		} else if (!testsRun) {
@@ -739,6 +747,8 @@ public class Tester {
 			"finalproject.all_puzzles_benchmark"
 	};
 
+	static double performanceFactor;
+
 	public static void main(String[] args) {
 
 		int numPassed = 0;
@@ -909,6 +919,21 @@ public class Tester {
 		return true;
 	}
 
+	/**
+	 * Solves the given sudoku and returns the time taken, in nanoseconds.
+	 *
+	 * @param puzzle
+	 *            The sudoku to be solved
+	 * @param allSolutions
+	 *            If true, the solve() method will be called with the argument
+	 *            allSolutions=true
+	 * @param timeoutMillis
+	 *            The maximum runtime, in milliseconds
+	 * @return The adjusted time taken to solve the puzzle, in milliseconds
+	 * @throws TimeoutException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	public static long runSolve(ChessSudoku puzzle, boolean allSolutions,
 			long timeoutMillis)
 			throws TimeoutException, InterruptedException, ExecutionException {
@@ -920,11 +945,47 @@ public class Tester {
 				long start = System.nanoTime();
 				puzzle.solve(allSolutions);
 				long end = System.nanoTime();
-				return end - start;
+				return (long) ((end - start) * getPerformanceFactor());
 			}
 		});
 		exec.shutdown();
 
 		return future.get(timeoutMillis, TimeUnit.MILLISECONDS);
+	}
+
+	/**
+	 * Returns a factor measuring the performance of this computer relative to
+	 * some standard (Louis' computer running on battery power). The adjusted
+	 * runtime of a solve is equal to the product of the performance factor and
+	 * the raw measured runtime.
+	 *
+	 * @return The performance factor of this computer
+	 */
+	public static double getPerformanceFactor() {
+
+		// Measure performance if it hasn't been done before
+		if (Tester.performanceFactor == 0) {
+			long STANDARD_RUNTIME = 2900000000L;
+			int ARRAY_SIZE = 1000;
+			int NUM_CYCLES = 5000000;
+
+			long start = System.nanoTime();
+			ArrayList<Integer> list = new ArrayList<Integer>();
+			int[] numbers = new int[ARRAY_SIZE];
+			for (int i = 0; i < ARRAY_SIZE; i++) {
+				numbers[i] = i;
+			}
+			for (int i = 0; i < NUM_CYCLES; i++) {
+				int index = i % ARRAY_SIZE;
+				list.add(numbers[index]);
+				list.contains(numbers[index]);
+			}
+			long end = System.nanoTime();
+
+			Tester.performanceFactor = (double) STANDARD_RUNTIME
+					/ (end - start);
+		}
+
+		return Tester.performanceFactor;
 	}
 }
