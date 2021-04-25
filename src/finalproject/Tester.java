@@ -213,7 +213,8 @@ class all_puzzles_benchmark implements Runnable {
 			"queen4x4.txt",
 			"harder5x5.txt",
 			"veryHard5x5.txt",
-			"queen5x5.txt"
+			"queen5x5.txt",
+			"knightKingQueen5x5.txt"
 	};
 	private boolean[] knightRules = {
 			false,
@@ -234,7 +235,8 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
-			false
+			false,
+			true
 	};
 	private boolean[] kingRules = {
 			false,
@@ -255,7 +257,8 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
-			false
+			false,
+			true
 	};
 	private boolean[] queenRules = {
 			false,
@@ -276,6 +279,7 @@ class all_puzzles_benchmark implements Runnable {
 			true,
 			false,
 			false,
+			true,
 			true
 	};
 	private final long TIMEOUT_MILLIS = 60000;
