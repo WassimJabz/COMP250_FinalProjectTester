@@ -10,7 +10,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -965,27 +967,68 @@ public class Tester {
 
 		// Measure performance if it hasn't been done before
 		if (Tester.performanceFactor == 0) {
-			long STANDARD_RUNTIME = 2900000000L;
-			int ARRAY_SIZE = 1000;
-			int NUM_CYCLES = 5000000;
+			long STANDARD_RUNTIME = 3000000000L;
+			int LIST_SIZE = 1400000;
 
 			long start = System.nanoTime();
+
+			// Sort array list
 			ArrayList<Integer> list = new ArrayList<Integer>();
-			int[] numbers = new int[ARRAY_SIZE];
-			for (int i = 0; i < ARRAY_SIZE; i++) {
-				numbers[i] = i;
+			Random rand = new Random(66);
+			for (int i = 0; i < LIST_SIZE; i++) {
+				list.add(rand.nextInt());
 			}
-			for (int i = 0; i < NUM_CYCLES; i++) {
-				int index = i % ARRAY_SIZE;
-				list.add(numbers[index]);
-				list.contains(numbers[index]);
-			}
+			Collections.sort(list);
+
+			// Fibonacci of large number
+			fibonacci(42);
+
+			// Prime sieve
+			sieveOfEratosthenes(50000000);
+
 			long end = System.nanoTime();
+			System.out.println((double) (end - start) / 1000000000 + " ns");
 
 			Tester.performanceFactor = (double) STANDARD_RUNTIME
 					/ (end - start);
 		}
 
 		return Tester.performanceFactor;
+	}
+
+	/*
+	 * Calculates the nth fibonacci number recursively. This is used to measure
+	 * the current computer's performance.
+	 */
+	private static int fibonacci(int n) {
+		if (n == 0 || n == 1)
+			return 0;
+		else
+			return fibonacci(n - 1) + fibonacci(n - 2);
+	}
+
+	/*
+	 * Returns a list containing all primes up to and including n. This is used
+	 * to measure the current computer's performance.
+	 */
+	private static ArrayList<Integer> sieveOfEratosthenes(int n) {
+		boolean[] notPrime = new boolean[n + 1];
+
+		for (int p = 2; p * p <= n; p++) {
+			if (notPrime[p])
+				continue;
+
+			for (int k = 2; k * p <= n; k++) {
+				notPrime[k * p] = true;
+			}
+		}
+
+		ArrayList<Integer> primes = new ArrayList<Integer>();
+		for (int i = 2; i <= n; i++) {
+			if (!notPrime[i])
+				primes.add(i);
+		}
+
+		return primes;
 	}
 }
