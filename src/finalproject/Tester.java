@@ -987,7 +987,6 @@ public class Tester {
 			sieveOfEratosthenes(50000000);
 
 			long end = System.nanoTime();
-			System.out.println((double) (end - start) / 1000000000 + " ns");
 
 			Tester.performanceFactor = (double) STANDARD_RUNTIME
 					/ (end - start);
