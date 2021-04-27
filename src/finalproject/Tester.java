@@ -211,19 +211,19 @@ class all_puzzles_benchmark implements Runnable {
 			"hard3x3.txt",
 			"knightSudokuEasy3x3.txt",
 			"knightSudokuMedium3x3.txt",
-			"knightSudokuHard3x3.txt",
-			"kingSudokuEasy3x3.txt",
 			"queenSudokuEasy3x3.txt",
+			"kingSudokuEasy3x3.txt",
 			"veryHard3x3.txt",
 			"veryEasy4x4.txt",
 			"hard4x4.txt",
+			"veryHard5x5.txt",
+			"knightKingQueen5x5.txt",
+			"queen4x4.txt",
+			"knightSudokuHard3x3.txt",
 			"veryHard4x4.txt",
 			"knightKing4x4.txt",
-			"queen4x4.txt",
-			"harder5x5.txt",
-			"veryHard5x5.txt",
 			"queen5x5.txt",
-			"knightKingQueen5x5.txt"
+			"harder5x5.txt"
 	};
 	private boolean[] knightRules = {
 			false,
@@ -233,7 +233,6 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			true,
 			true,
-			true,
 			false,
 			false,
 			false,
@@ -242,10 +241,11 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			true,
 			false,
+			true,
 			false,
+			true,
 			false,
-			false,
-			true
+			false
 	};
 	private boolean[] kingRules = {
 			false,
@@ -261,13 +261,13 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
-			false,
 			true,
 			false,
 			false,
 			false,
+			true,
 			false,
-			true
+			false
 	};
 	private boolean[] queenRules = {
 			false,
@@ -277,8 +277,6 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			false,
-			false,
-			false,
 			true,
 			false,
 			false,
@@ -286,11 +284,14 @@ class all_puzzles_benchmark implements Runnable {
 			false,
 			false,
 			true,
+			true,
+			false,
 			false,
 			false,
 			true,
-			true
+			false
 	};
+
 	private long TIMEOUT_MILLIS = 60000;
 	private boolean POST_RESULT = true;
 
@@ -391,16 +392,16 @@ class all_puzzles_benchmark implements Runnable {
 		System.out.printf("Score: %d\n", result.getScore());
 
 		// Post score to leaderboard
-		if (POST_RESULT && TIMEOUT_MILLIS <= 60000) {
+		if (POST_RESULT && TIMEOUT_MILLIS == 60000) {
 			postTestResult(result);
-		} else if (TIMEOUT_MILLIS > 60000) {
+		} else if (POST_RESULT && TIMEOUT_MILLIS != 60000) {
 			System.out.println();
 			System.out.println(
-					"Since TIMEOUT_MILLIS was increased, these test results cannot be posted");
+					"To upload your score you must set TIMEOUT_MILLIS to 60000 ms");
 		} else {
 			System.out.println();
 			System.out.println(
-					"To post your test results, set POST_RESULT to true");
+					"To post your score on the leaderboard, set POST_RESULT to true");
 		}
 
 		// Outcome
