@@ -297,7 +297,7 @@ class all_puzzles_benchmark implements Runnable {
 	@Override
 	public void run() {
 		int numTestsPassed = 0;
-		long totalTime = 0;
+		long runtime = 0;
 
 		// Get start time
 		LocalDateTime startDateTime = LocalDateTime.now();
@@ -361,14 +361,14 @@ class all_puzzles_benchmark implements Runnable {
 					System.out.println(
 							"[Timeout after " + TIMEOUT_MILLIS + " ms]");
 				}
-				totalTime += duration;
+				runtime += duration;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
 		// Create TestResult
-		TestResult result = new TestResult(numTestsPassed, totalTime,
+		TestResult result = new TestResult(numTestsPassed, runtime,
 				startDateTime);
 
 		// Print summary
@@ -376,7 +376,7 @@ class all_puzzles_benchmark implements Runnable {
 		System.out.printf("Puzzles solved: %d/%d\n", numTestsPassed,
 				puzzles.length);
 		System.out.printf("Total adjusted runtime: %.3f ms\n",
-				(double) totalTime / 1000000);
+				(double) runtime / 1000000);
 		System.out.printf("Score: %d\n", result.getScore());
 
 		// Outcome
@@ -389,12 +389,7 @@ class all_puzzles_benchmark implements Runnable {
 
 		// Post score to leaderboard
 		if (POST_RESULT && TIMEOUT_MILLIS <= 60000) {
-			boolean success = postTestResult(result);
-			if (success)
-				System.out.println("Score uploaded successfully!");
-			else
-				System.out.println(
-						"An unexpected error occurred and the upload failed");
+			postTestResult(result);
 		} else if (TIMEOUT_MILLIS > 60000) {
 			System.out.println();
 			System.out.println(
@@ -406,11 +401,20 @@ class all_puzzles_benchmark implements Runnable {
 		}
 	}
 
-	private boolean postTestResult(TestResult result) {
+	private void postTestResult(TestResult result) {
+
+		System.out.println();
 
 		String email = JOptionPane.showInputDialog(
 				"If you would like to upload your score, enter your McGill email"
 						+ "\naddress (first.last@mail.mcgill.ca).");
+		if (email == null) {
+			System.out.println("The upload was cancelled."
+					+ "\nIf you don't want to upload your score, you can set POST_RESULT to false.");
+			return;
+		}
+
+		// Repeat prompt if input was invalid
 		while (!isValidEmail(email)) {
 			email = JOptionPane.showInputDialog("\"" + email + "\""
 					+ " doesn't seem to be a valid McGill"
@@ -419,7 +423,11 @@ class all_puzzles_benchmark implements Runnable {
 					+ "first.last@mail.mcgill.ca.");
 		}
 
-		return result.upload(email);
+		boolean success = result.upload(email);
+		if (success)
+			System.out.println("Your score was successfully uploaded");
+		else
+			System.out.println("An unexpected error occurred");
 	}
 
 	private boolean isValidEmail(String email) {
