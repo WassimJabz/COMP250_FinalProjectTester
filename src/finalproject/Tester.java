@@ -296,8 +296,6 @@ class all_puzzles_benchmark implements Runnable {
 
 	@Override
 	public void run() {
-		int numTestsPassed = 0;
-		long runtime = 0;
 
 		// Get start time
 		LocalDateTime startDateTime = LocalDateTime.now();
@@ -318,8 +316,18 @@ class all_puzzles_benchmark implements Runnable {
 				maxNameLength = currentLength;
 		}
 
+		int numTestsPassed = 0;
+		long runtime = 0;
+		boolean timedOut = false;
 		for (int i = 0; i < puzzles.length; i++) {
 			String puzzleName = puzzles[i];
+			if (timedOut) {
+				System.out.printf("%-" + (maxNameLength + 3) + "s",
+						puzzleName + ":");
+				System.out.println("[Out of time]");
+				continue;
+			}
+
 			try {
 				FileInputStream in = new FileInputStream(
 						Tester.PUZZLES_FOLDER + puzzleName);
@@ -345,9 +353,10 @@ class all_puzzles_benchmark implements Runnable {
 
 				System.out.printf("%-" + (maxNameLength + 3) + "s",
 						puzzleName + ":");
-				long duration;
+				long duration = 0;
 				try {
-					duration = Tester.runSolve(s, false, TIMEOUT_MILLIS);
+					duration = Tester.runSolve(s, false,
+							TIMEOUT_MILLIS - runtime / 1000000);
 					if (Tester.isSolved(s, knightRules[i], kingRules[i],
 							queenRules[i])) {
 						System.out.printf("%.3f ms\n",
@@ -357,11 +366,13 @@ class all_puzzles_benchmark implements Runnable {
 						System.out.println("[Not solved correctly]");
 					}
 				} catch (TimeoutException e) {
-					duration = TIMEOUT_MILLIS * 1000000;
 					System.out.println(
 							"[Timeout after " + TIMEOUT_MILLIS + " ms]");
+					timedOut = true;
+					continue;
 				}
 				runtime += duration;
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -379,14 +390,6 @@ class all_puzzles_benchmark implements Runnable {
 				(double) runtime / 1000000);
 		System.out.printf("Score: %d\n", result.getScore());
 
-		// Outcome
-		System.out.println();
-		if (numTestsPassed == puzzles.length) {
-			System.out.println("Test passed.");
-		} else {
-			throw new AssertionError("One or more tests could not be run.");
-		}
-
 		// Post score to leaderboard
 		if (POST_RESULT && TIMEOUT_MILLIS <= 60000) {
 			postTestResult(result);
@@ -398,6 +401,14 @@ class all_puzzles_benchmark implements Runnable {
 			System.out.println();
 			System.out.println(
 					"To post your test results, set POST_RESULT to true");
+		}
+
+		// Outcome
+		System.out.println();
+		if (numTestsPassed == puzzles.length) {
+			System.out.println("Test passed.");
+		} else {
+			throw new AssertionError("One or more solves were not completed.");
 		}
 	}
 
@@ -423,11 +434,13 @@ class all_puzzles_benchmark implements Runnable {
 					+ "first.last@mail.mcgill.ca.");
 		}
 
+		System.out.println("Uploading... ");
 		boolean success = result.upload(email);
 		if (success)
 			System.out.println("Your score was successfully uploaded");
 		else
-			System.out.println("An unexpected error occurred");
+			System.out.println(
+					"An unexpected error occurred and the upload failed");
 	}
 
 	private boolean isValidEmail(String email) {
