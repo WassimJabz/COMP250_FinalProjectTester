@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +21,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.JOptionPane;
+
+import comp250.leaderboard.TestResult;
 
 // Student tests
 // ==========================================================================================
@@ -284,14 +291,16 @@ class all_puzzles_benchmark implements Runnable {
 			true,
 			true
 	};
-	private final long TIMEOUT_MILLIS = 60000;
+	private long TIMEOUT_MILLIS = 60000;
+	private boolean POST_RESULT = true;
 
 	@Override
 	public void run() {
-		boolean testsRun = true;
-		boolean allSolutionsCorrect = true;
-		boolean timeout = false;
+		int numTestsPassed = 0;
 		long totalTime = 0;
+
+		// Get start time
+		LocalDateTime startDateTime = LocalDateTime.now();
 
 		// Get performance factor
 		double performanceFactor = Tester.getPerformanceFactor();
@@ -340,48 +349,85 @@ class all_puzzles_benchmark implements Runnable {
 				try {
 					duration = Tester.runSolve(s, false, TIMEOUT_MILLIS);
 					if (Tester.isSolved(s, knightRules[i], kingRules[i],
-							queenRules[i]))
+							queenRules[i])) {
 						System.out.printf("%.3f ms\n",
 								(double) duration / 1000000);
-					else {
+						numTestsPassed++;
+					} else {
 						System.out.println("[Not solved correctly]");
-						allSolutionsCorrect = false;
 					}
 				} catch (TimeoutException e) {
 					duration = TIMEOUT_MILLIS * 1000000;
-					timeout = true;
 					System.out.println(
 							"[Timeout after " + TIMEOUT_MILLIS + " ms]");
 				}
 				totalTime += duration;
 			} catch (Exception e) {
-				testsRun = false;
 				e.printStackTrace();
 			}
 		}
 
-		if (testsRun && allSolutionsCorrect && !timeout) {
-			System.out.println("---------------------------------------------");
-			System.out.printf("Total adjusted time: %.3f ms\n",
-					(double) totalTime / 1000000);
-			System.out.println("\nTest passed.");
-		} else if (!testsRun) {
-			System.out.println();
-			throw new AssertionError("One or more tests could not be run.");
-		} else if (!allSolutionsCorrect) {
-			System.out.println();
-			throw new AssertionError(
-					"One or more puzzles were not solved correctly");
+		// Create TestResult
+		TestResult result = new TestResult(numTestsPassed, totalTime,
+				startDateTime);
+
+		// Print summary
+		System.out.println("---------------------------------------------");
+		System.out.printf("Puzzles solved: %d/%d\n", numTestsPassed,
+				puzzles.length);
+		System.out.printf("Total adjusted runtime: %.3f ms\n",
+				(double) totalTime / 1000000);
+		System.out.printf("Score: %d\n", result.getScore());
+
+		// Outcome
+		System.out.println();
+		if (numTestsPassed == puzzles.length) {
+			System.out.println("Test passed.");
 		} else {
-			System.out.println("-------------------------");
-			System.out.printf("Total time > %.3f ms\n",
-					(double) totalTime / 1000000);
-			System.out.println();
-			throw new AssertionError(
-					"One or more tests could not be completed in "
-							+ TIMEOUT_MILLIS
-							+ " ms. \nTry increasing TIMEOUT_MILLIS.");
+			throw new AssertionError("One or more tests could not be run.");
 		}
+
+		// Post score to leaderboard
+		if (POST_RESULT && TIMEOUT_MILLIS <= 60000) {
+			boolean success = postTestResult(result);
+			if (success)
+				System.out.println("Score uploaded successfully!");
+			else
+				System.out.println(
+						"An unexpected error occurred and the upload failed");
+		} else if (TIMEOUT_MILLIS > 60000) {
+			System.out.println();
+			System.out.println(
+					"Since TIMEOUT_MILLIS was increased, these test results cannot be posted");
+		} else {
+			System.out.println();
+			System.out.println(
+					"To post your test results, set POST_RESULT to true");
+		}
+	}
+
+	private boolean postTestResult(TestResult result) {
+
+		String email = JOptionPane.showInputDialog(
+				"If you would like to upload your score, enter your McGill email"
+						+ "\naddress (first.last@mail.mcgill.ca).");
+		while (!isValidEmail(email)) {
+			email = JOptionPane.showInputDialog("\"" + email + "\""
+					+ " doesn't seem to be a valid McGill"
+					+ " email address. "
+					+ "\nPlease enter a valid address with the format "
+					+ "first.last@mail.mcgill.ca.");
+		}
+
+		return result.upload(email);
+	}
+
+	private boolean isValidEmail(String email) {
+
+		String emailRegex = "[A-Za-z]+\\.[A-Za-z0-9]+@mail.mcgill.ca";
+		Pattern pattern = Pattern.compile(emailRegex);
+		Matcher matcher = pattern.matcher(email);
+		return matcher.matches();
 	}
 }
 
@@ -751,54 +797,6 @@ public class Tester {
 
 	static double performanceFactor;
 
-	public static void main(String[] args) {
-
-		int numPassed = 0;
-		ArrayList<String> failedTests = new ArrayList<String>(tests.length);
-		for (String className : tests) {
-			System.out.printf("%n======= %s =======%n", className);
-			System.out.flush();
-			try {
-				Runnable testCase = (Runnable) Class.forName(className)
-						.getDeclaredConstructor().newInstance();
-				testCase.run();
-				numPassed++;
-			} catch (AssertionError e) {
-				System.out.println(e);
-				failedTests.add(className);
-			} catch (StackOverflowError e) {
-				StackTraceElement[] elements = e.getStackTrace();
-				System.out.println(className + " caused a stack overflow at: ");
-				for (int i = 0; i < 5 && i < elements.length; i++) {
-					System.out.println(elements[i]);
-				}
-				if (elements.length >= 5) {
-					System.out.println("...and " + (elements.length - 5)
-							+ " more elements.");
-				}
-				failedTests.add(className);
-			} catch (Throwable t) {
-				t.printStackTrace();
-				failedTests.add(className);
-			}
-		}
-		System.out.printf("%n%n%d of %d tests passed.%n", numPassed,
-				tests.length);
-		if (failedTests.size() > 0) {
-			System.out.println("Failed test(s):");
-			for (String className : failedTests) {
-				int dotIndex = className.indexOf('.');
-				System.out.println(" " + className.substring(dotIndex + 1));
-			}
-		}
-		if (numPassed == tests.length) {
-			System.out.println("All clear! Great work :)");
-		}
-
-		// Force the program to exit to end any running solves
-		System.exit(0);
-	}
-
 	public static boolean isSolved(ChessSudoku puzzle, boolean knightRule,
 			boolean kingRule, boolean queenRule) {
 		for (int row = 0; row < puzzle.N; row++) {
@@ -1029,5 +1027,53 @@ public class Tester {
 		}
 
 		return primes;
+	}
+
+	public static void main(String[] args) {
+
+		int numPassed = 0;
+		ArrayList<String> failedTests = new ArrayList<String>(tests.length);
+		for (String className : tests) {
+			System.out.printf("%n======= %s =======%n", className);
+			System.out.flush();
+			try {
+				Runnable testCase = (Runnable) Class.forName(className)
+						.getDeclaredConstructor().newInstance();
+				testCase.run();
+				numPassed++;
+			} catch (AssertionError e) {
+				System.out.println(e);
+				failedTests.add(className);
+			} catch (StackOverflowError e) {
+				StackTraceElement[] elements = e.getStackTrace();
+				System.out.println(className + " caused a stack overflow at: ");
+				for (int i = 0; i < 5 && i < elements.length; i++) {
+					System.out.println(elements[i]);
+				}
+				if (elements.length >= 5) {
+					System.out.println("...and " + (elements.length - 5)
+							+ " more elements.");
+				}
+				failedTests.add(className);
+			} catch (Throwable t) {
+				t.printStackTrace();
+				failedTests.add(className);
+			}
+		}
+		System.out.printf("%n%n%d of %d tests passed.%n", numPassed,
+				tests.length);
+		if (failedTests.size() > 0) {
+			System.out.println("Failed test(s):");
+			for (String className : failedTests) {
+				int dotIndex = className.indexOf('.');
+				System.out.println(" " + className.substring(dotIndex + 1));
+			}
+		}
+		if (numPassed == tests.length) {
+			System.out.println("All clear! Great work :)");
+		}
+
+		// Force the program to exit to end any running solves
+		System.exit(0);
 	}
 }
