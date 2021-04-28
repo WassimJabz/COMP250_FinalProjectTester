@@ -417,6 +417,7 @@ class all_puzzles_benchmark implements Runnable {
 
 		System.out.println();
 
+		// Get email address
 		String email = JOptionPane.showInputDialog(
 				"If you would like to upload your score, enter your McGill email"
 						+ "\naddress (first.last@mail.mcgill.ca).");
@@ -426,7 +427,7 @@ class all_puzzles_benchmark implements Runnable {
 			return;
 		}
 
-		// Repeat prompt if input was invalid
+		// Repeat prompt if email was invalid
 		while (!isValidEmail(email)) {
 			email = JOptionPane.showInputDialog("\"" + email + "\""
 					+ " doesn't seem to be a valid McGill"
@@ -435,6 +436,7 @@ class all_puzzles_benchmark implements Runnable {
 					+ "first.last@mail.mcgill.ca.");
 		}
 
+		// Upload and print outcome
 		System.out.println("Uploading... ");
 		boolean success = result.upload(email);
 		if (success)
