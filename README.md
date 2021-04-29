@@ -3,10 +3,12 @@
 - Please only add TEST CODE here, not actual assignment code. If you accidentally pushed your assignment code, please delete ASAP to avoid any inconveniences.
 - Otherwise, happy coding and debugging!
 
-# How to Use
-- Currently the tester is under construction. As soon as the official tester is out, more tests will be added. 
-- However there are some Sodokus we found online. This will save you time from typing.
+# Using the leaderboard
+#### Uploading
+To upload your score, run the tester with POST_RESULT set to true and TIMEOUT_MILLIS at 60000. You will be prompted to enter your McGill email.
 
+#### Viewing the scores
+To view the existing scores, run Leaderboard.java.
 
 # How to Start
 #### Leaderboard
