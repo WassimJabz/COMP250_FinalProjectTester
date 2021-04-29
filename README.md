@@ -9,9 +9,15 @@
 
 
 # How to Start
-- You may clone this repo to your Intellij or your preferred IDE. If you aren't familiar with Git, our amazing TA Sasha made a tutorial https://www.youtube.com/playlist?list=PLFvevpoGcNCvjyTjOfPhzqjgb-L_WdX8r
-- Worst case scenario, you may also create a new local project, paste all the files on here in it, and add your chessSudoku to the finalproject package.
-- You can also add tests if you feel like it! Happy coding and debugging!
+#### Leaderboard
+- Download the leaderboard code by going to Releases and clicking on LeaderboardUploader.jar
+- Add the JAR to your project
+  - In Eclipse: Right-click on your project > Build Path > Add External Archives...
+#### Source code and puzzles
+- [Recommended] You can clone this repository. Sasha made an excellent (and quick) guide to doing this: https://www.youtube.com/playlist?list=PLFvevpoGcNCvjyTjOfPhzqjgb-L_WdX8r
+- If you'd like to avoid Git, you can download all the code and puzzles by clicking ↓Code > Download ZIP. 
+
+In either case, you must add your own ChessSudoku.java file to the finalproject package.
 
 # Installing
 For IntelliJ IDEA users (recommended)
