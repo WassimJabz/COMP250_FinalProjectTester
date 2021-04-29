@@ -10,6 +10,8 @@ public class Leaderboard {
 
 	public static void main(String[] args) {
 
+		System.out.println("Retrieving data...");
+
 		// Retrieve data
 		String responseBody;
 		try {
@@ -22,6 +24,10 @@ public class Leaderboard {
 		// Parse JSON
 		JSONArray array = new JSONArray(responseBody);
 		final int numResults = array.length();
+		if (numResults == 0) {
+			System.out.println("No scores were found");
+			return;
+		}
 		String[] names = new String[numResults];
 		int[] scores = new int[numResults];
 		String[] descriptions = new String[numResults];
@@ -44,10 +50,11 @@ public class Leaderboard {
 
 		// Display data
 		int scoreWidth = Math.max(maxScoreLength, 5);
+		System.out.println();
 		System.out.printf("%s  %-" + maxNameLength + "s  %-" + scoreWidth
 				+ "s  %s\n", "Rank", "Name", "Score", "Description");
 		for (int rank = 0; rank < numResults; rank++) {
-			System.out.printf("%4d  %" + maxNameLength + "s  %" + scoreWidth
+			System.out.printf("%4d  %-" + maxNameLength + "s  %" + scoreWidth
 					+ "d  %s\n", rank + 1, names[rank], scores[rank],
 					descriptions[rank]);
 		}
