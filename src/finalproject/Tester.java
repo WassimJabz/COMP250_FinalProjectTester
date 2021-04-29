@@ -186,18 +186,7 @@ class medium3x3_12solutions_solution implements Runnable {
 		s.solve(allSolutions);
 
 		// Test if the final Puzzle is the same
-		int counter = 0;
-		for (ChessSudoku cur : s.solutions) {
-			counter++;
-			if (!Tester.isSolved(cur, false, false, false))
-				throw new AssertionError(
-						"At least one of the given solutions is not valid");
-		}
-		if (counter != 12) {
-			throw new AssertionError(
-					"Test failed. There should be 12 solutions, but " + counter
-							+ " were given.");
-		}
+		Tester.checkAllSolutionsFound(s, 12, false, false, false);
 		System.out.println("Test passed.");
 	}
 }
@@ -833,6 +822,43 @@ public class Tester {
 		}
 
 		return true;
+	}
+
+	public static void checkAllSolutionsFound(ChessSudoku puzzle,
+			int expectedSize, boolean knightRule, boolean kingRule,
+			boolean queenRule) {
+
+		// Correct number of solutions
+		if (puzzle.solutions.size() != expectedSize)
+			throw new AssertionError("Expected " + expectedSize
+					+ " solutions but received " + puzzle.solutions.size());
+
+		// Main puzzle solved
+		if (!isSolved(puzzle, knightRule, kingRule, queenRule))
+			throw new AssertionError(
+					"The original puzzle is not solved correctly");
+
+		for (ChessSudoku cs : puzzle.solutions) {
+			// Valid solution
+			if (!isSolved(cs, knightRule, kingRule, queenRule))
+				throw new AssertionError(
+						"At least one of the given solutions is invalid");
+
+			// Not a duplicate
+			int numIdentical = 0;
+			for (ChessSudoku cs2 : puzzle.solutions) {
+				if (cs == cs2)
+					numIdentical++;
+				if (numIdentical > 1)
+					throw new AssertionError(
+							"Duplicate solutions detected (identical references)."
+									+ "\nDid you remember to copy the puzzles before saving?");
+
+				if (cs != cs2 && Arrays.deepEquals(cs.grid, cs2.grid))
+					throw new AssertionError(
+							"Duplicate solutions detected (different reference but same grid)");
+			}
+		}
 	}
 
 	public static boolean isValidValue(ChessSudoku puzzle, int row, int col,
