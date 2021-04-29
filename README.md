@@ -3,15 +3,23 @@
 - Please only add TEST CODE here, not actual assignment code. If you accidentally pushed your assignment code, please delete ASAP to avoid any inconveniences.
 - Otherwise, happy coding and debugging!
 
-# How to Use
-- Currently the tester is under construction. As soon as the official tester is out, more tests will be added. 
-- However there are some Sodokus we found online. This will save you time from typing.
+# Using the leaderboard
+#### Uploading
+To upload your score, run the tester with POST_RESULT set to true and TIMEOUT_MILLIS at 60000. You will be prompted to enter your McGill email.
 
+#### Viewing the scores
+To view the existing scores, run Leaderboard.java.
 
 # How to Start
-- You may clone this repo to your Intellij or your preferred IDE. If you aren't familiar with Git, our amazing TA Sasha made a tutorial https://www.youtube.com/playlist?list=PLFvevpoGcNCvjyTjOfPhzqjgb-L_WdX8r
-- Worst case scenario, you may also create a new local project, paste all the files on here in it, and add your chessSudoku to the finalproject package.
-- You can also add tests if you feel like it! Happy coding and debugging!
+#### Leaderboard
+- Download the leaderboard code by going to Releases and clicking on LeaderboardUploader.jar
+- Add the JAR to your project
+  - In Eclipse: Right-click on your project > Build Path > Add External Archives...
+#### Source code and puzzles
+- [Recommended] You can clone this repository. Sasha made an excellent (and quick) guide to doing this: https://www.youtube.com/playlist?list=PLFvevpoGcNCvjyTjOfPhzqjgb-L_WdX8r
+- If you'd like to avoid Git, you can download all the code and puzzles by clicking ↓Code > Download ZIP. 
+
+In either case, you must add your own ChessSudoku.java file to the finalproject package.
 
 # Installing
 For IntelliJ IDEA users (recommended)
