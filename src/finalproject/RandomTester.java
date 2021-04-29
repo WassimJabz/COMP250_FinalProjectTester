@@ -6,9 +6,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public class RandomTester {
-	private static final double SEED_DENSITY = 0.1;
-	private static final double MIN_CLUE_DENSITY = 0.5;
-	private static final double MAX_CLUE_DENSITY = 0.6;
+	private static final double SEED_DENSITY = 0.05;
+	private static final double MIN_CLUE_DENSITY = 0.3;
+	private static final double MAX_CLUE_DENSITY = 0.4;
 	private static final boolean SHOW_PROGRESS = true;
 	private static final long TIMEOUT_MILLIS = 60000;
 	private static final boolean SHOW_SUMMARY = true;
@@ -64,9 +64,9 @@ public class RandomTester {
 		System.out.println();
 
 		boolean knightRule = false;
-		boolean kingRule = false;
+		boolean kingRule = true;
 		boolean queenRule = false;
-		boolean allSolutions = false;
+		boolean allSolutions = true;
 
 		// Generate and solve sudokus
 		int numSolved = 0;
@@ -93,9 +93,9 @@ public class RandomTester {
 				System.out.print("\nSolving... ");
 
 			// TODO Remove this
-			// System.out.println("Puzzle:");
-			// puzzle.print();
-			// System.out.println();
+			System.out.println("Puzzle:");
+			puzzle.print();
+			System.out.println();
 
 			try {
 				duration = Tester.runSolve(puzzle, allSolutions,

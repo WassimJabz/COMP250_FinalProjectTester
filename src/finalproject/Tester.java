@@ -191,6 +191,138 @@ class medium3x3_12solutions_solution implements Runnable {
 	}
 }
 
+class knight3x3_1solution implements Runnable {
+	@Override
+	public void run() {
+
+		InputStream in = null;
+		try {
+			in = new FileInputStream(
+					Tester.PUZZLES_FOLDER + "knightOneSolution3x3.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		int puzzleSize = 0;
+		try {
+			puzzleSize = ChessSudoku.readInteger(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		// Uncomment to see what is going on
+		// Visualizer visualizer = new Visualizer(s);
+
+		// You can modify these to add rules to your sudoku
+		s.knightRule = true;
+		s.kingRule = false;
+		s.queenRule = false;
+
+		// read the rest of the Sudoku puzzle
+		try {
+			s.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean allSolutions = true;
+		s.solve(allSolutions);
+
+		// Test if the final Puzzle is the same
+		Tester.checkAllSolutionsFound(s, 1, true, false, false);
+		System.out.println("Test passed.");
+	}
+}
+
+class knight3x3_3solutions implements Runnable {
+	@Override
+	public void run() {
+
+		InputStream in = null;
+		try {
+			in = new FileInputStream(
+					Tester.PUZZLES_FOLDER + "knightMultipleSolutions3x3.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		int puzzleSize = 0;
+		try {
+			puzzleSize = ChessSudoku.readInteger(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		// Uncomment to see what is going on
+		// Visualizer visualizer = new Visualizer(s);
+
+		// You can modify these to add rules to your sudoku
+		s.knightRule = true;
+		s.kingRule = false;
+		s.queenRule = false;
+
+		// read the rest of the Sudoku puzzle
+		try {
+			s.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean allSolutions = true;
+		s.solve(allSolutions);
+
+		// Test if the final Puzzle is the same
+		Tester.checkAllSolutionsFound(s, 3, true, false, false);
+		System.out.println("Test passed.");
+	}
+}
+
+class king3x3_18solutions implements Runnable {
+	@Override
+	public void run() {
+
+		InputStream in = null;
+		try {
+			in = new FileInputStream(
+					Tester.PUZZLES_FOLDER + "kingMultipleSolutions3x3.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		int puzzleSize = 0;
+		try {
+			puzzleSize = ChessSudoku.readInteger(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		// Uncomment to see what is going on
+		// Visualizer visualizer = new Visualizer(s);
+
+		// You can modify these to add rules to your sudoku
+		s.knightRule = false;
+		s.kingRule = true;
+		s.queenRule = false;
+
+		// read the rest of the Sudoku puzzle
+		try {
+			s.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean allSolutions = true;
+		s.solve(allSolutions);
+
+		// Test if the final Puzzle is the same
+		Tester.checkAllSolutionsFound(s, 18, false, true, false);
+		System.out.println("Test passed.");
+	}
+}
+
 class all_puzzles_benchmark implements Runnable {
 	private String[] puzzles = {
 			"veryEasy3x3_twoSolutions.txt",
@@ -805,6 +937,9 @@ public class Tester {
 			"finalproject.veryEasy3x3_solution",
 			"finalproject.easy3x3_solution",
 			"finalproject.medium3x3_12solutions_solution",
+			"finalproject.knight3x3_1solution",
+			"finalproject.knight3x3_3solutions",
+			"finalproject.king3x3_18solutions",
 			"finalproject.all_puzzles_benchmark"
 	};
 
