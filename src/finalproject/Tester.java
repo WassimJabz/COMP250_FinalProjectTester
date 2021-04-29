@@ -323,6 +323,94 @@ class king3x3_18solutions implements Runnable {
 	}
 }
 
+class queen3x3_70solutions implements Runnable {
+	@Override
+	public void run() {
+
+		InputStream in = null;
+		try {
+			in = new FileInputStream(
+					Tester.PUZZLES_FOLDER + "queenMultipleSolutions3x3.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		int puzzleSize = 0;
+		try {
+			puzzleSize = ChessSudoku.readInteger(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		// Uncomment to see what is going on
+		// Visualizer visualizer = new Visualizer(s);
+
+		// You can modify these to add rules to your sudoku
+		s.knightRule = false;
+		s.kingRule = false;
+		s.queenRule = true;
+
+		// read the rest of the Sudoku puzzle
+		try {
+			s.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean allSolutions = true;
+		s.solve(allSolutions);
+
+		// Test if the final Puzzle is the same
+		Tester.checkAllSolutionsFound(s, 70, false, false, true);
+		System.out.println("Test passed.");
+	}
+}
+
+class knightKingQueen5x5_2solutions implements Runnable {
+	@Override
+	public void run() {
+
+		InputStream in = null;
+		try {
+			in = new FileInputStream(
+					Tester.PUZZLES_FOLDER + "knightKingQueen5x5.txt");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		int puzzleSize = 0;
+		try {
+			puzzleSize = ChessSudoku.readInteger(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		ChessSudoku s = new ChessSudoku(puzzleSize);
+
+		// Uncomment to see what is going on
+		// Visualizer visualizer = new Visualizer(s);
+
+		// You can modify these to add rules to your sudoku
+		s.knightRule = true;
+		s.kingRule = true;
+		s.queenRule = true;
+
+		// read the rest of the Sudoku puzzle
+		try {
+			s.read(in);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		boolean allSolutions = true;
+		s.solve(allSolutions);
+
+		// Test if the final Puzzle is the same
+		Tester.checkAllSolutionsFound(s, 2, true, true, true);
+		System.out.println("Test passed.");
+	}
+}
+
 class all_puzzles_benchmark implements Runnable {
 	private String[] puzzles = {
 			"veryEasy3x3_twoSolutions.txt",
@@ -940,6 +1028,8 @@ public class Tester {
 			"finalproject.knight3x3_1solution",
 			"finalproject.knight3x3_3solutions",
 			"finalproject.king3x3_18solutions",
+			"finalproject.queen3x3_70solutions",
+			"finalproject.knightKingQueen5x5_2solutions",
 			"finalproject.all_puzzles_benchmark"
 	};
 
