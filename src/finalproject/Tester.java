@@ -643,6 +643,11 @@ class all_puzzles_benchmark implements Runnable {
 					+ " email address. "
 					+ "\nPlease enter a valid address with the format "
 					+ "first.last@mail.mcgill.ca.");
+			if (email == null) {
+				System.out.println("The upload was cancelled."
+						+ "\nIf you don't want to upload your score, you can set POST_RESULT to false.");
+				return;
+			}
 		}
 
 		// Upload and print outcome
